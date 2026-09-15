@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakery Order & Ingredient Calculator</title>
+    <!-- Tailwind CSS for modern, responsive styling (mobile & laptop friendly) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JavaScript Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-indigo-900 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center">
+            <h1 class="text-xl font-bold">🍞 Bakery Production & Order Manager</h1>
+            <div id="sync-status" class="text-xs bg-indigo-800 px-3 py-1 rounded-full mt-2 sm:mt-0">Connecting to Cloud...</div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- LEFT COLUMN: Order Calculator & Daily Summary (Span 2) -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- Daily Orders Section -->
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-100">
+                <h2 class="text-lg font-semibold text-indigo-900 mb-4">🛒 Daily Order Calculator</h2>
+                <p class="text-sm text-slate-500 mb-4">Enter the number of pieces or bundles ordered today. The system will automatically calculate the required batches and ingredients.</p>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700">
+                                <th class="p-3 rounded-l-lg">Product Name</th>
+                                <th class="p-3">Order Input</th>
+                                <th class="p-3">Unit</th>
+                                <th class="p-3 rounded-r-lg text-right">Batches Needed</th>
+                            </tr>
+                        </thead>
+                        <tbody id="order-calculator-body" class="divide-y divide-slate-100">
+                            <!-- Populated dynamically by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Master Ingredient Requirement Summary -->
+            <div class="bg-indigo-50 rounded-xl shadow-sm p-6 border border-indigo-100">
+                <h2 class="text-lg font-semibold text-indigo-900 mb-3">📊 Master Kitchen Ingredient Summary</h2>
+                <p class="text-sm text-slate-600 mb-4">Total ingredients required for today's entire order list:</p>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="totals-grid">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Product Inventory & Management (Span 1) -->
+        <div class="space-y-6">
+            
+            <!-- Add / Edit Product Card -->
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-100">
+                <h2 id="form-title" class="text-lg font-semibold text-indigo-900 mb-4">➕ Add New Product</h2>
+                <form id="product-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                    <input type="hidden" id="edit-product-id">
+                    
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Product Name</label>
+                        <input type="text" id="prod-name" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="e.g. Cheese Roll">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Yield per Batch (pcs)</label>
+                            <input type="number" id="prod-yield" value="4" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Is it a Bundle?</label>
+                            <select id="prod-is-bundle" onchange="toggleBundleSize()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                                <option value="false">No (Pieces)</option>
+                                <option value="true">Yes (Bundle)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="bundle-size-wrapper" class="hidden">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Pieces per Bundle</label>
+                        <input type="number" id="prod-bundle-size" value="9" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+
+                    <div class="flex gap-2 pt-2">
+                        <button type="submit" id="save-btn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg text-sm transition">Save Product</button>
+                        <button type="button" id="cancel-edit-btn" onclick="resetForm()" class="hidden bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-4 py-2 rounded-lg text-sm transition">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Product Directory List (With Edit/Delete) -->
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-100">
+                <h2 class="text-lg font-semibold text-indigo-900 mb-4">📋 Product Catalog</h2>
+                <div class="overflow-y-auto max-h-96 space-y-3" id="product-catalog-list">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- JavaScript Logic & Supabase Connection -->
+    <script>
+        // Connected to your Supabase Menu Calculator project
+        const SUPABASE_URL = 'https://jnwumqhtrpngysirlllg.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impud3VtcWh0cnBuZ3lzaXJsbGxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NTg1MzEsImV4cCI6MjEwNTAzNDUzMX0.PNOI6I7hve3ChqwMl2eGKt1pXVb-2eFawiAh67R4Sfk';
+        
+        let db = null;
+        let products = [];
+        let orderInputs = {}; // Stores current input values by product ID
+
+        // Base recipe amounts per 1 full batch (755g total)
+        const BASE_RECIPE = {
+            flour: 100,
+            oil: 100,
+            yeast: 15,
+            sugar: 75,
+            milk: 200,
+            salt: 15,
+            water: 250
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const { createClient } = supabase;
+            db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            document.getElementById('sync-status').innerText = '🟢 Connected to Cloud';
+            fetchProductsFromSupabase();
+        });
+
+        async function fetchProductsFromSupabase() {
+            let { data, error } = await db.from('bakery_products').select('*').order('id', { ascending: true });
+            if (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('sync-status').innerText = '❌ Database Error (Check Table Setup)';
+            } else {
+                if (data.length === 0) {
+                    // Seed initial items if empty
+                    seedInitialData();
+                } else {
+                    products = data;
+                    renderApp();
+                }
+            }
+        }
+
+        async function seedInitialData() {
+            const defaults = [
+                { name: "Cinnamon Roll", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
+                { name: "Apple Cinnamon Roll", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
+                { name: "Pineapple Roll", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
+                { name: "Piñamon Roll", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
+                { name: "Chocolate Loaf", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
+                { name: "Mint Chocolate Roll", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
+                { name: "Mint Cinnamon Roll", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
+                { name: "Coco Loaf", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
+                { name: "Strussel", yield_pieces: 60, is_bundle: true, bundle_size: 9 }
+            ];
+            await db.from('bakery_products').insert(defaults);
+            fetchProductsFromSupabase();
+        }
+
+        function toggleBundleSize() {
+            const isBundle = document.getElementById('prod-is-bundle').value === 'true';
+            const wrapper = document.getElementById('bundle-size-wrapper');
+            if (isBundle) {
+                wrapper.classList.remove('hidden');
+            } else {
+                wrapper.classList.add('hidden');
+            }
+        }
+
+        function renderApp() {
+            renderOrderCalculator();
+            renderProductCatalog();
+            calculateTotals();
+        }
+
+        // Render the Calculator Table
+        function renderOrderCalculator() {
+            const tbody = document.getElementById('order-calculator-body');
+            tbody.innerHTML = '';
+
+            products.forEach(p => {
+                const currentVal = orderInputs[p.id] || 0;
+                const unitLabel = p.is_bundle ? `Bundles (${p.bundle_size} pcs/bnd)` : 'Pieces';
+                
+                // Calculate batches needed based on product settings
+                let batches = 0;
+                if (p.is_bundle) {
+                    batches = (currentVal * p.bundle_size) / p.yield_pieces;
+                } else {
+                    batches = currentVal / p.yield_pieces;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-3 font-medium text-slate-800">${p.name}</td>
+                    <td class="p-3">
+                        <input type="number" min="0" value="${currentVal}" oninput="updateOrderInput(${p.id}, this.value)" 
+                            class="w-24 border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-indigo-500 outline-none">
+                    </td>
+                    <td class="p-3 text-xs text-slate-500 italic">${unitLabel}</td>
+                    <td class="p-3 text-right font-bold text-indigo-600">${batches.toFixed(2)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateOrderInput(id, val) {
+            orderInputs[id] = parseFloat(val) || 0;
+            renderOrderCalculator();
+            calculateTotals();
+        }
+
+        // Render Product Catalog (with Edit & Delete options)
+        function renderProductCatalog() {
+            const list = document.getElementById('product-catalog-list');
+            list.innerHTML = '';
+
+            products.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-200 text-sm';
+                item.innerHTML = `
+                    <div>
+                        <p class="font-semibold text-slate-800">${p.name}</p>
+                        <p class="text-xs text-slate-500">Yield: ${p.yield_pieces} pcs ${p.is_bundle ? `• Bundle (${p.bundle_size} pcs)` : ''}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editProduct(${p.id})" class="text-indigo-600 hover:text-indigo-800 px-2 py-1 text-xs font-medium bg-indigo-50 rounded">Edit</button>
+                        <button onclick="deleteProduct(${p.id}, '${p.name}')" class="text-rose-600 hover:text-rose-800 px-2 py-1 text-xs font-medium bg-rose-50 rounded">Delete</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // Calculate Grand Totals across all inputs
+        function calculateTotals() {
+            let totalBatches = 0;
+
+            products.forEach(p => {
+                const val = orderInputs[p.id] || 0;
+                if (p.is_bundle) {
+                    totalBatches += (val * p.bundle_size) / p.yield_pieces;
+                } else {
+                    totalBatches += val / p.yield_pieces;
+                }
+            });
+
+            const grid = document.getElementById('totals-grid');
+            const ingredients = [
+                { name: 'Bread Flour', val: totalBatches * BASE_RECIPE.flour, unit: 'g' },
+                { name: 'Soybean Oil', val: totalBatches * BASE_RECIPE.oil, unit: 'g' },
+                { name: 'Dry Yeast', val: totalBatches * BASE_RECIPE.yeast, unit: 'g' },
+                { name: 'Sugar', val: totalBatches * BASE_RECIPE.sugar, unit: 'g' },
+                { name: 'Soy Milk', val: totalBatches * BASE_RECIPE.milk, unit: 'g' },
+                { name: 'Salt', val: totalBatches * BASE_RECIPE.salt, unit: 'g' },
+                { name: 'Water', val: totalBatches * BASE_RECIPE.water, unit: 'g' },
+                { name: 'Total Batches', val: totalBatches, unit: ' batches' }
+            ];
+
+            grid.innerHTML = ingredients.map(ing => `
+                <div class="bg-white p-3 rounded-lg border border-indigo-100 shadow-sm">
+                    <p class="text-xs text-slate-500 font-medium">${ing.name}</p>
+                    <p class="text-base font-bold text-indigo-900 mt-1">${ing.val.toFixed(2)} <span class="text-xs font-normal text-slate-600">${ing.unit}</span></p>
+                </div>
+            `).join('');
+        }
+
+        // Form Submit Handler (Add or Update)
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-product-id').value;
+            const name = document.getElementById('prod-name').value;
+            const yield_pieces = parseInt(document.getElementById('prod-yield').value);
+            const is_bundle = document.getElementById('prod-is-bundle').value === 'true';
+            const bundle_size = is_bundle ? parseInt(document.getElementById('prod-bundle-size').value) : 1;
+
+            const productData = { name, yield_pieces, is_bundle, bundle_size };
+
+            if (id) {
+                // Update in Supabase
+                const { error } = await db.from('bakery_products').update(productData).eq('id', id);
+                if (error) alert('Error updating product');
+            } else {
+                // Insert into Supabase
+                const { error } = await db.from('bakery_products').insert([productData]);
+                if (error) alert('Error adding product');
+            }
+            fetchProductsFromSupabase();
+            resetForm();
+        }
+
+        function editProduct(id) {
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            document.getElementById('edit-product-id').value = p.id;
+            document.getElementById('prod-name').value = p.name;
+            document.getElementById('prod-yield').value = p.yield_pieces;
+            document.getElementById('prod-is-bundle').value = p.is_bundle ? 'true' : 'false';
+            document.getElementById('prod-bundle-size').value = p.bundle_size;
+            
+            toggleBundleSize();
+            document.getElementById('form-title').innerText = '✏️ Edit Product';
+            document.getElementById('save-btn').innerText = 'Update Product';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+        }
+
+        function resetForm() {
+            document.getElementById('product-form').reset();
+            document.getElementById('edit-product-id').value = '';
+            document.getElementById('form-title').innerText = '➕ Add New Product';
+            document.getElementById('save-btn').innerText = 'Save Product';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+            toggleBundleSize();
+        }
+
+        // Delete with Warning Prompt
+        async function deleteProduct(id, name) {
+            if (confirm(`⚠️ Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
+                const { error } = await db.from('bakery_products').delete().eq('id', id);
+                if (error) {
+                    alert('Error deleting product');
+                } else {
+                    fetchProductsFromSupabase();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
