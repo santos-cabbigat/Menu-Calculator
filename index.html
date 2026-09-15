@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bakery Order & Ingredient Calculator</title>
-    <!-- Tailwind CSS for modern, responsive styling (mobile & laptop friendly) -->
+    <title>Advanced Bakery Production & Order Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase JavaScript Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen">
@@ -14,54 +12,81 @@
     <!-- Header -->
     <header class="bg-indigo-900 text-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center">
-            <h1 class="text-xl font-bold">🍞 Bakery Production & Order Manager</h1>
+            <h1 class="text-xl font-bold">🍞 Advanced Bakery & Menu Production Manager</h1>
             <div id="sync-status" class="text-xs bg-indigo-800 px-3 py-1 rounded-full mt-2 sm:mt-0">Connecting to Cloud...</div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <!-- LEFT COLUMN: Order Calculator & Daily Summary (Span 2) -->
+        <!-- LEFT COLUMN: Universal Order Picker & Active Daily Orders (Span 2) -->
         <div class="lg:col-span-2 space-y-6">
             
-            <!-- Daily Orders Section -->
+            <!-- Universal Search & Order Picker -->
             <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-100">
-                <h2 class="text-lg font-semibold text-indigo-900 mb-4">🛒 Daily Order Calculator</h2>
-                <p class="text-sm text-slate-500 mb-4">Enter the number of pieces or bundles ordered today. The system will automatically calculate the required batches and ingredients.</p>
+                <h2 class="text-lg font-semibold text-indigo-900 mb-2">🔍 Universal Order Search & Selector</h2>
+                <p class="text-sm text-slate-500 mb-4">Search for any product by name or category to add it to today's production list.</p>
+                
+                <div class="relative">
+                    <input type="text" id="order-search-input" oninput="filterSearchCatalog()" placeholder="Type to search products (e.g., Cinnamon Roll, Smoothie, Sandwich)..." class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <div id="search-dropdown" class="absolute z-10 w-full bg-white border border-slate-200 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto hidden">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Daily Order List -->
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-100">
+                <h2 class="text-lg font-semibold text-indigo-900 mb-4">🛒 Today's Active Production Orders</h2>
                 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-sm">
                         <thead>
                             <tr class="bg-slate-100 text-slate-700">
                                 <th class="p-3 rounded-l-lg">Product Name</th>
-                                <th class="p-3">Order Input</th>
-                                <th class="p-3">Unit</th>
-                                <th class="p-3 rounded-r-lg text-right">Batches Needed</th>
+                                <th class="p-3">Category</th>
+                                <th class="p-3">Quantity Needed</th>
+                                <th class="p-3">Batches / Units</th>
+                                <th class="p-3 rounded-r-lg text-right">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="order-calculator-body" class="divide-y divide-slate-100">
-                            <!-- Populated dynamically -->
+                        <tbody id="active-orders-body" class="divide-y divide-slate-100">
+                            <tr><td colspan="5" class="p-4 text-center text-slate-400 italic">No orders added yet. Use the search box above to add items.</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Master Ingredient Requirement Summary -->
-            <div class="bg-indigo-50 rounded-xl shadow-sm p-6 border border-indigo-100">
-                <h2 class="text-lg font-semibold text-indigo-900 mb-3">📊 Master Kitchen Ingredient Summary</h2>
-                <p class="text-sm text-slate-600 mb-4">Total ingredients required for today's entire order list:</p>
+            <!-- Master Ingredient & Component Summaries -->
+            <div class="bg-indigo-50 rounded-xl shadow-sm p-6 border border-indigo-100 space-y-4">
+                <h2 class="text-lg font-semibold text-indigo-900">📊 Kitchen Production Requirements</h2>
                 
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="totals-grid">
-                    <!-- Populated dynamically -->
+                <div>
+                    <h3 class="text-xs font-bold text-indigo-800 uppercase tracking-wider mb-2">Shared Dough Requirements (Base Recipe)</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="shared-dough-grid">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <div id="custom-ingredients-section" class="hidden">
+                    <h3 class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-2">Custom Product Ingredients</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="custom-ingredients-grid"></div>
+                </div>
+
+                <div>
+                    <h3 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2">Extra Components (Fillings, Toppings, Add-ons)</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="components-grid">
+                        <div class="bg-white p-3 rounded-lg border border-indigo-100 shadow-sm text-xs text-slate-400 italic">No extra components required yet.</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- RIGHT COLUMN: Admin Authentication & Product Management (Span 1) -->
+        <!-- RIGHT COLUMN: Admin Authentication & Management (Span 1) -->
         <div class="space-y-6">
             
-            <!-- Admin Login Card (Shows when logged out) -->
-            <div id="auth-card" class="bg-white rounded-xl shadow-sm p-6 border border-slate-100 hidden">
+            <!-- Admin Login Card -->
+            <div id="auth-card" class="bg-white rounded-xl shadow-sm p-6 border border-slate-100">
                 <h2 class="text-lg font-semibold text-indigo-900 mb-4">🔐 Admin Login</h2>
                 <form onsubmit="handleLogin(event)" class="space-y-3">
                     <div>
@@ -77,7 +102,7 @@
                 </form>
             </div>
 
-            <!-- Logged-in Status Card (Shows when logged in) -->
+            <!-- Logged-in Session Card -->
             <div id="admin-session-card" class="bg-indigo-900 text-white rounded-xl shadow-sm p-4 flex justify-between items-center hidden">
                 <div>
                     <p class="text-xs text-indigo-200">Logged in as Admin</p>
@@ -86,34 +111,78 @@
                 <button onclick="handleLogout()" class="bg-indigo-800 hover:bg-indigo-700 text-xs px-3 py-1.5 rounded-lg transition">Log Out</button>
             </div>
 
-            <!-- Add / Edit Product Card (Only visible when logged in) -->
+            <!-- Add / Edit Product Card (Admin Only) -->
             <div id="product-form-container" class="bg-white rounded-xl shadow-sm p-6 border border-slate-100 hidden">
                 <h2 id="form-title" class="text-lg font-semibold text-indigo-900 mb-4">➕ Add New Product</h2>
-                <form id="product-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                <form id="product-form" onsubmit="handleFormSubmit(event)" class="space-y-3">
                     <input type="hidden" id="edit-product-id">
                     
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Product Name</label>
-                        <input type="text" id="prod-name" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="e.g. Cheese Roll">
+                        <input type="text" id="prod-name" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="e.g. Cinnamon Roll">
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Category</label>
+                            <select id="prod-category" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                                <option value="Bakery">Bakery</option>
+                                <option value="Sandwich">Sandwich</option>
+                                <option value="Burger">Burger</option>
+                                <option value="Drinks">Drinks</option>
+                                <option value="Wellness Blend">Wellness Blend</option>
+                                <option value="Smoothie">Smoothie</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Yield per Batch (pcs)</label>
                             <input type="number" id="prod-yield" value="4" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
                         </div>
+                    </div>
+
+                    <!-- Bakery Specific Options -->
+                    <div id="bakery-options-wrapper" class="space-y-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Is it a Bundle?</label>
-                            <select id="prod-is-bundle" onchange="toggleBundleSize()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
-                                <option value="false">No (Pieces)</option>
-                                <option value="true">Yes (Bundle)</option>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Dough Type</label>
+                            <select id="prod-shared-dough" onchange="toggleDoughMode()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                                <option value="true">Standard Shared Dough (755g base)</option>
+                                <option value="false">Custom Ingredients Dough</option>
                             </select>
+                        </div>
+
+                        <div id="custom-dough-inputs" class="hidden space-y-2">
+                            <label class="block text-xs font-semibold text-amber-700 uppercase">Custom Ingredients per Batch (Grams)</label>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <input type="text" id="cust-ing-1" placeholder="Ingredient Name (e.g. Flour)" class="border p-1.5 rounded">
+                                <input type="number" id="cust-amt-1" placeholder="Grams" class="border p-1.5 rounded">
+                            </div>
                         </div>
                     </div>
 
-                    <div id="bundle-size-wrapper" class="hidden">
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Pieces per Bundle</label>
-                        <input type="number" id="prod-bundle-size" value="9" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Unit Type</label>
+                            <select id="prod-is-bundle" onchange="toggleBundleSize()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                                <option value="false">Pieces</option>
+                                <option value="true">Bundle</option>
+                            </select>
+                        </div>
+                        <div id="bundle-size-wrapper" class="hidden">
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Pcs per Bundle</label>
+                            <input type="number" id="prod-bundle-size" value="9" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Extra Components (Fillings / Toppings) -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Extra Fillings / Toppings (Per Batch or Unit)</label>
+                        <div class="flex gap-2 mb-2">
+                            <input type="text" id="comp-name" placeholder="Name (e.g. Apple Filling)" class="flex-1 border p-1.5 rounded text-xs">
+                            <input type="number" id="comp-grams" placeholder="Grams" class="w-20 border p-1.5 rounded text-xs">
+                            <button type="button" onclick="addComponentRow()" class="bg-slate-200 hover:bg-slate-300 px-3 py-1 rounded text-xs font-semibold">+</button>
+                        </div>
+                        <div id="components-list-preview" class="space-y-1 text-xs text-slate-600"></div>
                     </div>
 
                     <div class="flex gap-2 pt-2">
@@ -123,26 +192,24 @@
                 </form>
             </div>
 
-            <!-- Product Directory List -->
-            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-100">
+            <!-- Product Catalog (Admin Only) -->
+            <div id="product-catalog-card" class="bg-white rounded-xl shadow-sm p-6 border border-slate-100 hidden">
                 <h2 class="text-lg font-semibold text-indigo-900 mb-4">📋 Product Catalog</h2>
-                <div class="overflow-y-auto max-h-96 space-y-3" id="product-catalog-list">
-                    <!-- Populated dynamically -->
-                </div>
+                <div class="overflow-y-auto max-h-96 space-y-3" id="product-catalog-list"></div>
             </div>
 
         </div>
 
     </main>
 
-    <!-- JavaScript Logic & Supabase Connection -->
     <script>
         const SUPABASE_URL = 'https://jnwumqhtrpngysirlllg.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impud3VtcWh0cnBuZ3lzaXJsbGxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NTg1MzEsImV4cCI6MjEwNTAzNDUzMX0.PNOI6I7hve3ChqwMl2eGKt1pXVb-2eFawiAh67R4Sfk';
         
         let db = null;
         let products = [];
-        let orderInputs = {}; 
+        let activeOrders = {}; // productId -> quantity input
+        let currentComponents = [];
         let currentUser = null;
 
         const BASE_RECIPE = {
@@ -160,7 +227,6 @@
             db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             document.getElementById('sync-status').innerText = '🟢 Connected to Cloud';
 
-            // Check active login session
             const { data: { session } } = await db.auth.getSession();
             updateAuthUI(session);
 
@@ -168,7 +234,7 @@
                 updateAuthUI(session);
             });
 
-            fetchProductsFromSupabase();
+            await fetchProductsFromSupabase();
         });
 
         function updateAuthUI(session) {
@@ -176,16 +242,19 @@
             const authCard = document.getElementById('auth-card');
             const sessionCard = document.getElementById('admin-session-card');
             const formContainer = document.getElementById('product-form-container');
+            const catalogCard = document.getElementById('product-catalog-card');
 
             if (currentUser) {
                 authCard.classList.add('hidden');
                 sessionCard.classList.remove('hidden');
                 formContainer.classList.remove('hidden');
+                catalogCard.classList.remove('hidden');
                 document.getElementById('admin-user-email').innerText = currentUser.email;
             } else {
                 authCard.classList.remove('hidden');
                 sessionCard.classList.add('hidden');
                 formContainer.classList.add('hidden');
+                catalogCard.classList.add('hidden');
             }
             renderProductCatalog();
         }
@@ -196,7 +265,7 @@
             const password = document.getElementById('admin-password').value;
             const errorEl = document.getElementById('login-error');
 
-            const { data, error } = await db.auth.signInWithPassword({ email, password });
+            const { error } = await db.auth.signInWithPassword({ email, password });
             if (error) {
                 errorEl.innerText = error.message;
                 errorEl.classList.remove('hidden');
@@ -213,155 +282,251 @@
         }
 
         async function fetchProductsFromSupabase() {
-            let { data, error } = await db.from('bakery_products').select('*').order('id', { ascending: true });
+            let { data, error } = await db.from('bakery_products').select('*').order('name', { ascending: true });
             if (error) {
                 console.error('Error fetching data:', error);
                 document.getElementById('sync-status').innerText = '❌ Database Error';
             } else {
                 products = data || [];
-                renderApp();
+                renderProductCatalog();
             }
+        }
+
+        function toggleDoughMode() {
+            const isShared = document.getElementById('prod-shared-dough').value === 'true';
+            document.getElementById('custom-dough-inputs').classList.toggle('hidden', isShared);
         }
 
         function toggleBundleSize() {
             const isBundle = document.getElementById('prod-is-bundle').value === 'true';
-            const wrapper = document.getElementById('bundle-size-wrapper');
-            if (isBundle) {
-                wrapper.classList.remove('hidden');
-            } else {
-                wrapper.classList.add('hidden');
+            document.getElementById('bundle-size-wrapper').classList.toggle('hidden', !isBundle);
+        }
+
+        function addComponentRow() {
+            const name = document.getElementById('comp-name').value.trim();
+            const grams = parseFloat(document.getElementById('comp-grams').value);
+            if (!name || isNaN(grams)) return alert('Enter valid component name and grams');
+
+            currentComponents.push({ name, grams });
+            document.getElementById('comp-name').value = '';
+            document.getElementById('comp-grams').value = '';
+            renderComponentPreview();
+        }
+
+        function renderComponentPreview() {
+            const container = document.getElementById('components-list-preview');
+            container.innerHTML = currentComponents.map((c, idx) => `
+                <div class="flex justify-between items-center bg-slate-100 p-1 rounded">
+                    <span>${c.name}: <strong>${c.grams}g</strong></span>
+                    <button type="button" onclick="currentComponents.splice(${idx}, 1); renderComponentPreview();" class="text-rose-600 font-bold px-1">×</button>
+                </div>
+            `).join('');
+        }
+
+        // Universal Search Filter
+        function filterSearchCatalog() {
+            const query = document.getElementById('order-search-input').value.toLowerCase();
+            const dropdown = document.getElementById('search-dropdown');
+            if (!query) {
+                dropdown.classList.add('hidden');
+                return;
             }
-        }
 
-        function renderApp() {
-            renderOrderCalculator();
-            renderProductCatalog();
-            calculateTotals();
-        }
-
-        function renderOrderCalculator() {
-            const tbody = document.getElementById('order-calculator-body');
-            tbody.innerHTML = '';
-
-            products.forEach(p => {
-                const currentVal = orderInputs[p.id] || 0;
-                const unitLabel = p.is_bundle ? `Bundles (${p.bundle_size} pcs/bnd)` : 'Pieces';
-                
-                let batches = 0;
-                if (p.is_bundle) {
-                    batches = (currentVal * p.bundle_size) / p.yield_pieces;
-                } else {
-                    batches = currentVal / p.yield_pieces;
-                }
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="p-3 font-medium text-slate-800">${p.name}</td>
-                    <td class="p-3">
-                        <input type="number" min="0" value="${currentVal}" oninput="updateOrderInput(${p.id}, this.value)" 
-                            class="w-24 border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-indigo-500 outline-none">
-                    </td>
-                    <td class="p-3 text-xs text-slate-500 italic">${unitLabel}</td>
-                    <td id="batches-${p.id}" class="p-3 text-right font-bold text-indigo-600">${batches.toFixed(2)}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function updateOrderInput(id, val) {
-            orderInputs[id] = parseFloat(val) || 0;
-            const p = products.find(prod => prod.id === id);
-            let batches = 0;
-            if (p.is_bundle) {
-                batches = (orderInputs[id] * p.bundle_size) / p.yield_pieces;
+            const matches = products.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+            if (matches.length === 0) {
+                dropdown.innerHTML = `<div class="p-3 text-sm text-slate-400">No products found</div>`;
             } else {
-                batches = orderInputs[id] / p.yield_pieces;
-            }
-            document.getElementById(`batches-${id}`).innerText = batches.toFixed(2);
-            calculateTotals();
-        }
-
-        function renderProductCatalog() {
-            const list = document.getElementById('product-catalog-list');
-            list.innerHTML = '';
-
-            products.forEach(p => {
-                const item = document.createElement('div');
-                item.className = 'flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-200 text-sm';
-                
-                // Only show Edit and Delete buttons if logged in as admin
-                let actionButtons = '';
-                if (currentUser) {
-                    actionButtons = `
-                        <div class="flex gap-2">
-                            <button onclick="editProduct(${p.id})" class="text-indigo-600 hover:text-indigo-800 px-2 py-1 text-xs font-medium bg-indigo-50 rounded">Edit</button>
-                            <button onclick="deleteProduct(${p.id}, '${p.name}')" class="text-rose-600 hover:text-rose-800 px-2 py-1 text-xs font-medium bg-rose-50 rounded">Delete</button>
+                dropdown.innerHTML = matches.map(p => `
+                    <div onclick="addOrderFromSearch(${p.id})" class="p-3 hover:bg-indigo-50 cursor-pointer flex justify-between items-center text-sm border-b border-slate-100 last:border-0">
+                        <div>
+                            <p class="font-semibold text-slate-800">${p.name}</p>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">${p.category}</span>
                         </div>
-                    `;
-                }
-
-                item.innerHTML = `
-                    <div>
-                        <p class="font-semibold text-slate-800">${p.name}</p>
-                        <p class="text-xs text-slate-500">Yield: ${p.yield_pieces} pcs ${p.is_bundle ? `• Bundle (${p.bundle_size} pcs)` : ''}</p>
+                        <span class="text-indigo-600 text-xs font-bold">+ Add to Orders</span>
                     </div>
-                    ${actionButtons}
+                `).join('');
+            }
+            dropdown.classList.remove('hidden');
+        }
+
+        function addOrderFromSearch(id) {
+            if (!activeOrders[id]) activeOrders[id] = 1;
+            document.getElementById('order-search-input').value = '';
+            document.getElementById('search-dropdown').classList.add('hidden');
+            renderActiveOrders();
+            calculateTotals();
+        }
+
+        function updateOrderQuantity(id, val) {
+            activeOrders[id] = parseFloat(val) || 0;
+            if (activeOrders[id] <= 0) delete activeOrders[id];
+            renderActiveOrders();
+            calculateTotals();
+        }
+
+        function removeActiveOrder(id) {
+            delete activeOrders[id];
+            renderActiveOrders();
+            calculateTotals();
+        }
+
+        function renderActiveOrders() {
+            const tbody = document.getElementById('active-orders-body');
+            const activeIds = Object.keys(activeOrders);
+
+            if (activeIds.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">No orders added yet. Use the search box above to add items.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = activeIds.map(id => {
+                const p = products.find(prod => prod.id == id);
+                if (!p) return '';
+                const qty = activeOrders[id];
+
+                let batches = p.is_bundle ? (qty * p.bundle_size) / p.yield_pieces : qty / p.yield_pieces;
+
+                return `
+                    <tr>
+                        <td class="p-3 font-medium text-slate-800">${p.name}</td>
+                        <td class="p-3"><span class="text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded font-medium">${p.category}</span></td>
+                        <td class="p-3">
+                            <input type="number" min="0" value="${qty}" oninput="updateOrderQuantity(${p.id}, this.value)" class="w-20 border border-slate-300 rounded px-2 py-1 text-sm outline-none">
+                            <span class="text-xs text-slate-500 ml-1">${p.is_bundle ? 'Bundles' : 'Pcs'}</span>
+                        </td>
+                        <td class="p-3 font-bold text-indigo-600">${batches.toFixed(2)} batches</td>
+                        <td class="p-3 text-right">
+                            <button onclick="removeActiveOrder(${p.id})" class="text-rose-600 hover:text-rose-800 text-xs font-semibold bg-rose-50 px-2 py-1 rounded">Remove</button>
+                        </td>
+                    </tr>
                 `;
-                list.appendChild(item);
-            });
+            }).join('');
         }
 
         function calculateTotals() {
-            let totalBatches = 0;
+            let sharedBatches = 0;
+            let customIngredientsMap = {};
+            let componentsMap = {};
 
-            products.forEach(p => {
-                const val = orderInputs[p.id] || 0;
-                if (p.is_bundle) {
-                    totalBatches += (val * p.bundle_size) / p.yield_pieces;
-                } else {
-                    totalBatches += val / p.yield_pieces;
+            Object.keys(activeOrders).forEach(id => {
+                const p = products.find(prod => prod.id == id);
+                if (!p) return;
+                const qty = activeOrders[id];
+                let batches = p.is_bundle ? (qty * p.bundle_size) / p.yield_pieces : qty / p.yield_pieces;
+
+                if (p.has_shared_dough) {
+                    sharedBatches += batches;
+                } else if (p.custom_ingredients) {
+                    p.custom_ingredients.forEach(ci => {
+                        customIngredientsMap[ci.name] = (customIngredientsMap[ci.name] || 0) + (ci.grams * batches);
+                    });
+                }
+
+                if (p.components) {
+                    p.components.forEach(comp => {
+                        let totalGrams = comp.grams * (p.is_bundle ? qty * p.bundle_size : qty);
+                        componentsMap[comp.name] = (componentsMap[comp.name] || 0) + totalGrams;
+                    });
                 }
             });
 
-            const grid = document.getElementById('totals-grid');
-            const ingredients = [
-                { name: 'Bread Flour', val: totalBatches * BASE_RECIPE.flour, unit: 'g' },
-                { name: 'Soybean Oil', val: totalBatches * BASE_RECIPE.oil, unit: 'g' },
-                { name: 'Dry Yeast', val: totalBatches * BASE_RECIPE.yeast, unit: 'g' },
-                { name: 'Sugar', val: totalBatches * BASE_RECIPE.sugar, unit: 'g' },
-                { name: 'Soy Milk', val: totalBatches * BASE_RECIPE.milk, unit: 'g' },
-                { name: 'Salt', val: totalBatches * BASE_RECIPE.salt, unit: 'g' },
-                { name: 'Water', val: totalBatches * BASE_RECIPE.water, unit: 'g' },
-                { name: 'Total Batches', val: totalBatches, unit: ' batches' }
+            // Render Shared Dough
+            const sharedGrid = document.getElementById('shared-dough-grid');
+            const sharedRecipe = [
+                { name: 'Bread Flour', val: sharedBatches * BASE_RECIPE.flour },
+                { name: 'Soybean Oil', val: sharedBatches * BASE_RECIPE.oil },
+                { name: 'Dry Yeast', val: sharedBatches * BASE_RECIPE.yeast },
+                { name: 'Sugar', val: sharedBatches * BASE_RECIPE.sugar },
+                { name: 'Soy Milk', val: sharedBatches * BASE_RECIPE.milk },
+                { name: 'Salt', val: sharedBatches * BASE_RECIPE.salt },
+                { name: 'Water', val: sharedBatches * BASE_RECIPE.water },
+                { name: 'Total Batches', val: sharedBatches, isBatch: true }
             ];
-
-            grid.innerHTML = ingredients.map(ing => `
+            sharedGrid.innerHTML = sharedRecipe.map(ing => `
                 <div class="bg-white p-3 rounded-lg border border-indigo-100 shadow-sm">
                     <p class="text-xs text-slate-500 font-medium">${ing.name}</p>
-                    <p class="text-base font-bold text-indigo-900 mt-1">${ing.val.toFixed(2)} <span class="text-xs font-normal text-slate-600">${ing.unit}</span></p>
+                    <p class="text-base font-bold text-indigo-900 mt-1">${ing.val.toFixed(2)} <span class="text-xs font-normal text-slate-600">${ing.isBatch ? 'batches' : 'g'}</span></p>
                 </div>
             `).join('');
+
+            // Render Custom Ingredients
+            const customSec = document.getElementById('custom-ingredients-section');
+            const customGrid = document.getElementById('custom-ingredients-grid');
+            const customKeys = Object.keys(customIngredientsMap);
+            if (customKeys.length > 0) {
+                customSec.classList.remove('hidden');
+                customGrid.innerHTML = customKeys.map(k => `
+                    <div class="bg-white p-3 rounded-lg border border-amber-100 shadow-sm">
+                        <p class="text-xs text-slate-500 font-medium">${k}</p>
+                        <p class="text-base font-bold text-amber-900 mt-1">${customIngredientsMap[k].toFixed(2)} <span class="text-xs font-normal text-slate-600">g</span></p>
+                    </div>
+                `).join('');
+            } else {
+                customSec.classList.add('hidden');
+            }
+
+            // Render Components
+            const compGrid = document.getElementById('components-grid');
+            const compKeys = Object.keys(componentsMap);
+            if (compKeys.length > 0) {
+                compGrid.innerHTML = compKeys.map(k => `
+                    <div class="bg-white p-3 rounded-lg border border-emerald-100 shadow-sm">
+                        <p class="text-xs text-slate-500 font-medium">${k}</p>
+                        <p class="text-base font-bold text-emerald-900 mt-1">${componentsMap[k].toFixed(2)} <span class="text-xs font-normal text-slate-600">g</span></p>
+                    </div>
+                `).join('');
+            } else {
+                compGrid.innerHTML = `<div class="bg-white p-3 rounded-lg border border-indigo-100 shadow-sm text-xs text-slate-400 italic">No extra components required yet.</div>`;
+            }
         }
 
         async function handleFormSubmit(e) {
             e.preventDefault();
             const id = document.getElementById('edit-product-id').value;
             const name = document.getElementById('prod-name').value;
+            const category = document.getElementById('prod-category').value;
             const yield_pieces = parseInt(document.getElementById('prod-yield').value);
+            const has_shared_dough = document.getElementById('prod-shared-dough').value === 'true';
             const is_bundle = document.getElementById('prod-is-bundle').value === 'true';
             const bundle_size = is_bundle ? parseInt(document.getElementById('prod-bundle-size').value) : 1;
 
-            const productData = { name, yield_pieces, is_bundle, bundle_size };
+            let custom_ingredients = [];
+            if (!has_shared_dough) {
+                const ingName = document.getElementById('cust-ing-1').value;
+                const ingAmt = parseFloat(document.getElementById('cust-amt-1').value) || 0;
+                if (ingName) custom_ingredients.push({ name: ingName, grams: ingAmt });
+            }
+
+            const productData = { name, category, yield_pieces, has_shared_dough, custom_ingredients, is_bundle, bundle_size, components: currentComponents };
 
             if (id) {
-                const { error } = await db.from('bakery_products').update(productData).eq('id', id);
-                if (error) alert('Error updating product: ' + error.message);
+                await db.from('bakery_products').update(productData).eq('id', id);
             } else {
-                const { error } = await db.from('bakery_products').insert([productData]);
-                if (error) alert('Error adding product: ' + error.message);
+                await db.from('bakery_products').insert([productData]);
             }
-            fetchProductsFromSupabase();
+            await fetchProductsFromSupabase();
             resetForm();
+        }
+
+        function renderProductCatalog() {
+            const list = document.getElementById('product-catalog-list');
+            if (!currentUser) {
+                list.innerHTML = '';
+                return;
+            }
+
+            list.innerHTML = products.map(p => `
+                <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-200 text-sm">
+                    <div>
+                        <p class="font-semibold text-slate-800">${p.name}</p>
+                        <p class="text-xs text-slate-500">${p.category} • Yield: ${p.yield_pieces} pcs ${p.is_bundle ? `• Bundle (${p.bundle_size})` : ''}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editProduct(${p.id})" class="text-indigo-600 hover:text-indigo-800 px-2 py-1 text-xs font-medium bg-indigo-50 rounded">Edit</button>
+                        <button onclick="deleteProduct(${p.id}, '${p.name}')" class="text-rose-600 hover:text-rose-800 px-2 py-1 text-xs font-medium bg-rose-50 rounded">Delete</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function editProduct(id) {
@@ -370,11 +535,17 @@
 
             document.getElementById('edit-product-id').value = p.id;
             document.getElementById('prod-name').value = p.name;
+            document.getElementById('prod-category').value = p.category;
             document.getElementById('prod-yield').value = p.yield_pieces;
+            document.getElementById('prod-shared-dough').value = p.has_shared_dough ? 'true' : 'false';
             document.getElementById('prod-is-bundle').value = p.is_bundle ? 'true' : 'false';
             document.getElementById('prod-bundle-size').value = p.bundle_size;
             
+            currentComponents = p.components || [];
+            renderComponentPreview();
+            toggleDoughMode();
             toggleBundleSize();
+
             document.getElementById('form-title').innerText = '✏️ Edit Product';
             document.getElementById('save-btn').innerText = 'Update Product';
             document.getElementById('cancel-edit-btn').classList.remove('hidden');
@@ -386,17 +557,16 @@
             document.getElementById('form-title').innerText = '➕ Add New Product';
             document.getElementById('save-btn').innerText = 'Save Product';
             document.getElementById('cancel-edit-btn').classList.add('hidden');
+            currentComponents = [];
+            renderComponentPreview();
+            toggleDoughMode();
             toggleBundleSize();
         }
 
         async function deleteProduct(id, name) {
             if (confirm(`⚠️ Are you sure you want to delete "${name}"?`)) {
-                const { error } = await db.from('bakery_products').delete().eq('id', id);
-                if (error) {
-                    alert('Error deleting product: ' + error.message);
-                } else {
-                    fetchProductsFromSupabase();
-                }
+                await db.from('bakery_products').delete().eq('id', id);
+                await fetchProductsFromSupabase();
             }
         }
     </script>
