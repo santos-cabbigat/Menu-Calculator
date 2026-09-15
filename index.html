@@ -40,7 +40,7 @@
                             </tr>
                         </thead>
                         <tbody id="order-calculator-body" class="divide-y divide-slate-100">
-                            <!-- Populated dynamically by JavaScript -->
+                            <!-- Populated dynamically -->
                         </tbody>
                     </table>
                 </div>
@@ -57,11 +57,37 @@
             </div>
         </div>
 
-        <!-- RIGHT COLUMN: Product Inventory & Management (Span 1) -->
+        <!-- RIGHT COLUMN: Admin Authentication & Product Management (Span 1) -->
         <div class="space-y-6">
             
-            <!-- Add / Edit Product Card -->
-            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-100">
+            <!-- Admin Login Card (Shows when logged out) -->
+            <div id="auth-card" class="bg-white rounded-xl shadow-sm p-6 border border-slate-100 hidden">
+                <h2 class="text-lg font-semibold text-indigo-900 mb-4">🔐 Admin Login</h2>
+                <form onsubmit="handleLogin(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Email</label>
+                        <input type="email" id="admin-email" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Password</label>
+                        <input type="password" id="admin-password" required class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg text-sm transition">Log In</button>
+                    <p id="login-error" class="text-xs text-rose-600 text-center hidden"></p>
+                </form>
+            </div>
+
+            <!-- Logged-in Status Card (Shows when logged in) -->
+            <div id="admin-session-card" class="bg-indigo-900 text-white rounded-xl shadow-sm p-4 flex justify-between items-center hidden">
+                <div>
+                    <p class="text-xs text-indigo-200">Logged in as Admin</p>
+                    <p id="admin-user-email" class="text-sm font-semibold truncate max-w-[180px]"></p>
+                </div>
+                <button onclick="handleLogout()" class="bg-indigo-800 hover:bg-indigo-700 text-xs px-3 py-1.5 rounded-lg transition">Log Out</button>
+            </div>
+
+            <!-- Add / Edit Product Card (Only visible when logged in) -->
+            <div id="product-form-container" class="bg-white rounded-xl shadow-sm p-6 border border-slate-100 hidden">
                 <h2 id="form-title" class="text-lg font-semibold text-indigo-900 mb-4">➕ Add New Product</h2>
                 <form id="product-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
                     <input type="hidden" id="edit-product-id">
@@ -97,7 +123,7 @@
                 </form>
             </div>
 
-            <!-- Product Directory List (With Edit/Delete) -->
+            <!-- Product Directory List -->
             <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-100">
                 <h2 class="text-lg font-semibold text-indigo-900 mb-4">📋 Product Catalog</h2>
                 <div class="overflow-y-auto max-h-96 space-y-3" id="product-catalog-list">
@@ -111,15 +137,14 @@
 
     <!-- JavaScript Logic & Supabase Connection -->
     <script>
-        // Connected to your Supabase Menu Calculator project
         const SUPABASE_URL = 'https://jnwumqhtrpngysirlllg.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impud3VtcWh0cnBuZ3lzaXJsbGxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NTg1MzEsImV4cCI6MjEwNTAzNDUzMX0.PNOI6I7hve3ChqwMl2eGKt1pXVb-2eFawiAh67R4Sfk';
         
         let db = null;
         let products = [];
-        let orderInputs = {}; // Stores current input values by product ID
+        let orderInputs = {}; 
+        let currentUser = null;
 
-        // Base recipe amounts per 1 full batch (755g total)
         const BASE_RECIPE = {
             flour: 100,
             oil: 100,
@@ -130,43 +155,72 @@
             water: 250
         };
 
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             const { createClient } = supabase;
             db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             document.getElementById('sync-status').innerText = '🟢 Connected to Cloud';
+
+            // Check active login session
+            const { data: { session } } = await db.auth.getSession();
+            updateAuthUI(session);
+
+            db.auth.onAuthStateChange((event, session) => {
+                updateAuthUI(session);
+            });
+
             fetchProductsFromSupabase();
         });
+
+        function updateAuthUI(session) {
+            currentUser = session ? session.user : null;
+            const authCard = document.getElementById('auth-card');
+            const sessionCard = document.getElementById('admin-session-card');
+            const formContainer = document.getElementById('product-form-container');
+
+            if (currentUser) {
+                authCard.classList.add('hidden');
+                sessionCard.classList.remove('hidden');
+                formContainer.classList.remove('hidden');
+                document.getElementById('admin-user-email').innerText = currentUser.email;
+            } else {
+                authCard.classList.remove('hidden');
+                sessionCard.classList.add('hidden');
+                formContainer.classList.add('hidden');
+            }
+            renderProductCatalog();
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+            const errorEl = document.getElementById('login-error');
+
+            const { data, error } = await db.auth.signInWithPassword({ email, password });
+            if (error) {
+                errorEl.innerText = error.message;
+                errorEl.classList.remove('hidden');
+            } else {
+                errorEl.classList.add('hidden');
+                document.getElementById('admin-email').value = '';
+                document.getElementById('admin-password').value = '';
+            }
+        }
+
+        async function handleLogout() {
+            await db.auth.signOut();
+            resetForm();
+        }
 
         async function fetchProductsFromSupabase() {
             let { data, error } = await db.from('bakery_products').select('*').order('id', { ascending: true });
             if (error) {
                 console.error('Error fetching data:', error);
-                document.getElementById('sync-status').innerText = '❌ Database Error (Check Table Setup)';
+                document.getElementById('sync-status').innerText = '❌ Database Error';
             } else {
-                if (data.length === 0) {
-                    // Seed initial items if empty
-                    seedInitialData();
-                } else {
-                    products = data;
-                    renderApp();
-                }
+                products = data || [];
+                renderApp();
             }
-        }
-
-        async function seedInitialData() {
-            const defaults = [
-                { name: "Cinnamon Roll", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
-                { name: "Apple Cinnamon Roll", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
-                { name: "Pineapple Roll", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
-                { name: "Piñamon Roll", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
-                { name: "Chocolate Loaf", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
-                { name: "Mint Chocolate Roll", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
-                { name: "Mint Cinnamon Roll", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
-                { name: "Coco Loaf", yield_pieces: 4, is_bundle: false, bundle_size: 1 },
-                { name: "Strussel", yield_pieces: 60, is_bundle: true, bundle_size: 9 }
-            ];
-            await db.from('bakery_products').insert(defaults);
-            fetchProductsFromSupabase();
         }
 
         function toggleBundleSize() {
@@ -185,7 +239,6 @@
             calculateTotals();
         }
 
-        // Render the Calculator Table
         function renderOrderCalculator() {
             const tbody = document.getElementById('order-calculator-body');
             tbody.innerHTML = '';
@@ -194,7 +247,6 @@
                 const currentVal = orderInputs[p.id] || 0;
                 const unitLabel = p.is_bundle ? `Bundles (${p.bundle_size} pcs/bnd)` : 'Pieces';
                 
-                // Calculate batches needed based on product settings
                 let batches = 0;
                 if (p.is_bundle) {
                     batches = (currentVal * p.bundle_size) / p.yield_pieces;
@@ -210,7 +262,7 @@
                             class="w-24 border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-indigo-500 outline-none">
                     </td>
                     <td class="p-3 text-xs text-slate-500 italic">${unitLabel}</td>
-                    <td class="p-3 text-right font-bold text-indigo-600">${batches.toFixed(2)}</td>
+                    <td id="batches-${p.id}" class="p-3 text-right font-bold text-indigo-600">${batches.toFixed(2)}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -218,11 +270,17 @@
 
         function updateOrderInput(id, val) {
             orderInputs[id] = parseFloat(val) || 0;
-            renderOrderCalculator();
+            const p = products.find(prod => prod.id === id);
+            let batches = 0;
+            if (p.is_bundle) {
+                batches = (orderInputs[id] * p.bundle_size) / p.yield_pieces;
+            } else {
+                batches = orderInputs[id] / p.yield_pieces;
+            }
+            document.getElementById(`batches-${id}`).innerText = batches.toFixed(2);
             calculateTotals();
         }
 
-        // Render Product Catalog (with Edit & Delete options)
         function renderProductCatalog() {
             const list = document.getElementById('product-catalog-list');
             list.innerHTML = '';
@@ -230,21 +288,29 @@
             products.forEach(p => {
                 const item = document.createElement('div');
                 item.className = 'flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-200 text-sm';
+                
+                // Only show Edit and Delete buttons if logged in as admin
+                let actionButtons = '';
+                if (currentUser) {
+                    actionButtons = `
+                        <div class="flex gap-2">
+                            <button onclick="editProduct(${p.id})" class="text-indigo-600 hover:text-indigo-800 px-2 py-1 text-xs font-medium bg-indigo-50 rounded">Edit</button>
+                            <button onclick="deleteProduct(${p.id}, '${p.name}')" class="text-rose-600 hover:text-rose-800 px-2 py-1 text-xs font-medium bg-rose-50 rounded">Delete</button>
+                        </div>
+                    `;
+                }
+
                 item.innerHTML = `
                     <div>
                         <p class="font-semibold text-slate-800">${p.name}</p>
                         <p class="text-xs text-slate-500">Yield: ${p.yield_pieces} pcs ${p.is_bundle ? `• Bundle (${p.bundle_size} pcs)` : ''}</p>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="editProduct(${p.id})" class="text-indigo-600 hover:text-indigo-800 px-2 py-1 text-xs font-medium bg-indigo-50 rounded">Edit</button>
-                        <button onclick="deleteProduct(${p.id}, '${p.name}')" class="text-rose-600 hover:text-rose-800 px-2 py-1 text-xs font-medium bg-rose-50 rounded">Delete</button>
-                    </div>
+                    ${actionButtons}
                 `;
                 list.appendChild(item);
             });
         }
 
-        // Calculate Grand Totals across all inputs
         function calculateTotals() {
             let totalBatches = 0;
 
@@ -277,7 +343,6 @@
             `).join('');
         }
 
-        // Form Submit Handler (Add or Update)
         async function handleFormSubmit(e) {
             e.preventDefault();
             const id = document.getElementById('edit-product-id').value;
@@ -289,13 +354,11 @@
             const productData = { name, yield_pieces, is_bundle, bundle_size };
 
             if (id) {
-                // Update in Supabase
                 const { error } = await db.from('bakery_products').update(productData).eq('id', id);
-                if (error) alert('Error updating product');
+                if (error) alert('Error updating product: ' + error.message);
             } else {
-                // Insert into Supabase
                 const { error } = await db.from('bakery_products').insert([productData]);
-                if (error) alert('Error adding product');
+                if (error) alert('Error adding product: ' + error.message);
             }
             fetchProductsFromSupabase();
             resetForm();
@@ -326,12 +389,11 @@
             toggleBundleSize();
         }
 
-        // Delete with Warning Prompt
         async function deleteProduct(id, name) {
-            if (confirm(`⚠️ Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
+            if (confirm(`⚠️ Are you sure you want to delete "${name}"?`)) {
                 const { error } = await db.from('bakery_products').delete().eq('id', id);
                 if (error) {
-                    alert('Error deleting product');
+                    alert('Error deleting product: ' + error.message);
                 } else {
                     fetchProductsFromSupabase();
                 }
