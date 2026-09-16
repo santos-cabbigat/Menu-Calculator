@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -16,16 +16,16 @@
                 extend: {
                     fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
                     colors: {
-                        bgDark: '#010c0a',
-                        cardBg: 'rgba(4, 31, 26, 0.45)',
-                        borderColor: '#1e4d40',
+                        bgDark: '#031713', // Brighter base
+                        cardBg: 'rgba(12, 45, 35, 0.55)', // Brighter glass
+                        borderColor: '#22634e', // Brighter border
                         accentGreen: '#4ade80',
                         textBright: '#ffffff',
-                        textMuted: '#94a3b8',
+                        textMuted: '#a8b8d0', // Less muted text
                         textSubhead: '#cbd5e1'
                     },
                     backgroundImage: {
-                        'theme-gradient': 'radial-gradient(circle at 85% 0%, #062b25 0%, #021411 50%, #010c0a 100%)'
+                        'theme-gradient': 'radial-gradient(circle at top right, #0d4a3b 0%, #06261f 50%, #031713 100%)'
                     }
                 }
             }
@@ -35,17 +35,17 @@
     <style>
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #1e4d40; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #22634e; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #4ade80; }
         
         body { -webkit-tap-highlight-color: transparent; }
         
         .glass-card { 
-            background: rgba(6, 24, 20, 0.6); 
+            background: rgba(15, 55, 43, 0.55); 
             backdrop-filter: blur(16px); 
             -webkit-backdrop-filter: blur(16px);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(30, 77, 64, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(74, 222, 128, 0.15); /* Subtle green tint border */
         }
         
         select {
@@ -55,13 +55,13 @@
             background-image: none !important;
             cursor: pointer;
         }
-        select option { background-color: #010c0a; color: #ffffff; }
+        select option { background-color: #031713; color: #ffffff; }
 
         .hide-spinners::-webkit-inner-spin-button, 
         .hide-spinners::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         .hide-spinners { -moz-appearance: textfield; }
         
-        input, select, button { transition: all 0.2s ease; }
+        input, select, button { transition: all 0.25s ease-out; }
         .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
     </style>
 </head>
@@ -71,24 +71,24 @@
 
     <!-- FIXED TOP HEADER & NAV -->
     <div class="fixed top-0 left-0 right-0 z-[1000]">
-        <header class="glass-card rounded-none border-t-0 border-l-0 border-r-0 border-b border-borderColor/50 shadow-lg relative bg-[#010c0a]/90">
+        <header class="glass-card rounded-none border-t-0 border-l-0 border-r-0 border-b border-borderColor/60 shadow-lg relative bg-[#031713]/80">
             <div class="max-w-6xl mx-auto px-5 py-3.5 flex justify-between items-center">
                 <h1 class="text-lg font-bold tracking-tight flex items-center gap-2 text-textBright">
-                    <div class="w-2 h-2 rounded-full bg-accentGreen shadow-[0_0_8px_#4ade80]"></div>
+                    <div class="w-2 h-2 rounded-full bg-accentGreen shadow-[0_0_12px_#4ade80]"></div>
                     Oon Jai Production
                 </h1>
                 <div class="flex items-center gap-3">
-                    <div id="sync-status" class="text-[9px] uppercase tracking-wider bg-black/40 border border-borderColor/60 text-accentGreen px-2.5 py-1 rounded-full hidden sm:flex items-center gap-1.5 font-semibold">
+                    <div id="sync-status" class="text-[9px] uppercase tracking-wider bg-black/20 border border-borderColor/60 text-accentGreen px-2.5 py-1 rounded-full hidden sm:flex items-center gap-1.5 font-bold">
                         <span class="w-1.5 h-1.5 rounded-full bg-accentGreen animate-pulse"></span> Connecting
                     </div>
-                    <button id="logout-btn" onclick="handleLogout()" class="hidden text-[11px] bg-black/20 border border-borderColor hover:border-accentGreen/50 hover:text-accentGreen px-3 py-1.5 rounded-lg transition font-medium tracking-wide">Log Out</button>
+                    <button id="logout-btn" onclick="handleLogout()" class="hidden text-[11px] bg-black/20 border border-borderColor hover:border-accentGreen hover:bg-accentGreen/10 hover:text-accentGreen px-3 py-1.5 rounded-lg transition-all font-bold tracking-wide">Log Out</button>
                 </div>
             </div>
         </header>
 
         <!-- Desktop Tab Navigation -->
-        <nav class="hidden md:flex gap-2 border-b border-borderColor/40 pb-px glass-card rounded-none border-t-0 border-x-0 bg-[#010c0a]/80 justify-center">
-            <button id="nav-tab-home" onclick="switchTab('tab-home')" class="desktop-nav-tab px-6 py-3 text-[13px] font-semibold border-b-2 border-accentGreen text-textBright transition-colors whitespace-nowrap">Home</button>
+        <nav class="hidden md:flex gap-2 border-b border-borderColor/40 pb-px glass-card rounded-none border-t-0 border-x-0 bg-[#031713]/70 justify-center">
+            <button id="nav-tab-home" onclick="switchTab('tab-home')" class="desktop-nav-tab px-6 py-3 text-[13px] font-bold border-b-2 border-accentGreen text-textBright transition-colors whitespace-nowrap">Dashboard</button>
             <button id="nav-tab-order-calc" onclick="switchTab('tab-order-calc')" class="desktop-nav-tab px-6 py-3 text-[13px] font-medium border-b-2 border-transparent text-textMuted hover:text-textBright transition-colors whitespace-nowrap">Orders & Calc</button>
             <button id="nav-tab-adding" onclick="switchTab('tab-adding')" class="desktop-nav-tab px-6 py-3 text-[13px] font-medium border-b-2 border-transparent text-textMuted hover:text-textBright transition-colors whitespace-nowrap">Product Manager</button>
             <button id="nav-tab-catalog" onclick="switchTab('tab-catalog')" class="desktop-nav-tab px-6 py-3 text-[13px] font-medium border-b-2 border-transparent text-textMuted hover:text-textBright transition-colors whitespace-nowrap">Master Catalog</button>
@@ -98,22 +98,22 @@
     <!-- MODALS -->
     <div id="modal-backdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[2000] hidden flex justify-center items-center opacity-0 transition-opacity duration-300 p-4">
         
-        <div id="linking-info-modal" class="glass-card rounded-2xl shadow-2xl p-6 max-w-md w-full transform scale-95 transition-transform duration-300 hidden modal-content relative overflow-hidden border-t-2 border-t-accentGreen/50">
-            <h3 class="text-lg font-bold text-accentGreen mb-3 pb-3 border-b border-borderColor/30">Master Base Link</h3>
+        <div id="linking-info-modal" class="glass-card rounded-2xl shadow-2xl p-6 max-w-md w-full transform scale-95 transition-transform duration-300 hidden modal-content relative overflow-hidden border-t-2 border-t-accentGreen">
+            <h3 class="text-lg font-bold text-accentGreen mb-3 pb-3 border-b border-borderColor/40">Master Base Link</h3>
             <p class="text-sm text-textSubhead font-light mb-5 leading-relaxed">Ingredient Linking allows you to tie multiple different products to the exact same master recipe (like a shared dough or sauce). When you edit one, all other products sharing that same link automatically update.</p>
-            <button onclick="closeAllModals()" class="w-full bg-accentGreen text-bgDark font-bold py-3 rounded-xl transition-all">Got it</button>
+            <button onclick="closeAllModals()" class="w-full bg-accentGreen text-bgDark font-bold py-3 rounded-xl hover:bg-green-400 transition-all shadow-[0_4px_14px_rgba(74,222,128,0.2)]">Got it</button>
         </div>
         
-        <div id="ing-info-modal" class="glass-card rounded-2xl shadow-2xl p-6 max-w-md w-full transform scale-95 transition-transform duration-300 hidden modal-content relative overflow-hidden border-t-2 border-t-[#60ad36]/50">
-            <h3 class="text-lg font-bold text-[#60ad36] mb-3 pb-3 border-b border-borderColor/30">Custom Ingredients</h3>
+        <div id="ing-info-modal" class="glass-card rounded-2xl shadow-2xl p-6 max-w-md w-full transform scale-95 transition-transform duration-300 hidden modal-content relative overflow-hidden border-t-2 border-t-[#60ad36]">
+            <h3 class="text-lg font-bold text-[#60ad36] mb-3 pb-3 border-b border-borderColor/40">Custom Ingredients</h3>
             <p class="text-sm text-textSubhead font-light mb-5 leading-relaxed">These are the core ingredients that make up the main product. <strong>You must provide at least 2 ingredients</strong> with valid amounts to save a product. Leave unused rows blank.</p>
-            <button onclick="closeAllModals()" class="w-full bg-[#60ad36] text-white font-bold py-3 rounded-xl transition-all">Got it</button>
+            <button onclick="closeAllModals()" class="w-full bg-[#60ad36] text-white hover:bg-[#52962e] font-bold py-3 rounded-xl transition-all shadow-[0_4px_14px_rgba(96,173,54,0.2)]">Got it</button>
         </div>
 
-        <div id="sub-info-modal" class="glass-card rounded-2xl shadow-2xl p-6 max-w-md w-full transform scale-95 transition-transform duration-300 hidden modal-content relative overflow-hidden border-t-2 border-t-[#34E0A1]/50">
-            <h3 class="text-lg font-bold text-[#34E0A1] mb-3 pb-3 border-b border-borderColor/30">Subcomponents</h3>
+        <div id="sub-info-modal" class="glass-card rounded-2xl shadow-2xl p-6 max-w-md w-full transform scale-95 transition-transform duration-300 hidden modal-content relative overflow-hidden border-t-2 border-t-[#34E0A1]">
+            <h3 class="text-lg font-bold text-[#34E0A1] mb-3 pb-3 border-b border-borderColor/40">Subcomponents</h3>
             <p class="text-sm text-textSubhead font-light mb-5 leading-relaxed">Optional additions like fillings, toppings, or garnishes that are assembled with the final product. These are calculated independently from the main dough/base.</p>
-            <button onclick="closeAllModals()" class="w-full bg-[#34E0A1] text-bgDark font-bold py-3 rounded-xl transition-all">Got it</button>
+            <button onclick="closeAllModals()" class="w-full bg-[#34E0A1] text-bgDark hover:bg-[#2bc48a] font-bold py-3 rounded-xl transition-all shadow-[0_4px_14px_rgba(52,224,161,0.2)]">Got it</button>
         </div>
     </div>
 
@@ -121,21 +121,21 @@
     <main class="max-w-5xl mx-auto px-4 pt-28 md:pt-36 pb-28 space-y-6">
 
         <!-- LOGIN SCREEN -->
-        <div id="login-screen" class="max-w-[400px] mx-auto mt-6 glass-card rounded-2xl shadow-2xl p-8 relative overflow-hidden border-t-2 border-t-accentGreen/50">
+        <div id="login-screen" class="max-w-[400px] mx-auto mt-6 glass-card rounded-2xl shadow-2xl p-8 relative overflow-hidden border-t-2 border-t-accentGreen">
             <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold text-textBright mb-2 tracking-tight">Welcome Back</h2>
-                <p class="text-sm text-textMuted font-light">Sign in to manage production</p>
+                <h2 class="text-3xl font-extrabold text-textBright mb-2 tracking-tight">Welcome Back</h2>
+                <p class="text-sm text-textMuted font-medium">Sign in to manage production</p>
             </div>
             <form onsubmit="handleLogin(event)" class="space-y-5">
                 <div>
-                    <label class="block text-[11px] font-semibold text-textSubhead uppercase tracking-widest mb-2">Email</label>
-                    <input type="email" id="admin-email" required class="w-full bg-black/30 border border-borderColor/50 text-textBright rounded-xl px-4 py-3 text-sm focus:border-accentGreen outline-none transition-all">
+                    <label class="block text-[11px] font-bold text-textSubhead uppercase tracking-widest mb-2">Email</label>
+                    <input type="email" id="admin-email" required class="w-full bg-black/20 border border-borderColor/70 text-textBright rounded-xl px-4 py-3.5 text-sm focus:border-accentGreen outline-none transition-all">
                 </div>
                 <div>
-                    <label class="block text-[11px] font-semibold text-textSubhead uppercase tracking-widest mb-2">Password</label>
-                    <input type="password" id="admin-password" required class="w-full bg-black/30 border border-borderColor/50 text-textBright rounded-xl px-4 py-3 text-sm focus:border-accentGreen outline-none transition-all">
+                    <label class="block text-[11px] font-bold text-textSubhead uppercase tracking-widest mb-2">Password</label>
+                    <input type="password" id="admin-password" required class="w-full bg-black/20 border border-borderColor/70 text-textBright rounded-xl px-4 py-3.5 text-sm focus:border-accentGreen outline-none transition-all">
                 </div>
-                <button type="submit" class="w-full bg-accentGreen text-bgDark font-bold py-3.5 rounded-xl text-sm transition-all mt-2">Access Dashboard</button>
+                <button type="submit" class="w-full bg-accentGreen hover:bg-green-400 text-bgDark font-bold py-4 rounded-xl text-sm transition-all mt-4 shadow-[0_4px_14px_rgba(74,222,128,0.25)]">Access Dashboard</button>
                 <p id="login-error" class="text-xs text-red-400 bg-red-400/10 border border-red-400/20 p-2.5 rounded-lg text-center hidden mt-3"></p>
             </form>
         </div>
@@ -145,34 +145,57 @@
             
             <!-- TAB 0: HOME DASHBOARD -->
             <div id="tab-home" class="space-y-6 tab-content block w-full">
-                <div class="glass-card rounded-2xl p-8 shadow-xl text-center border-t-2 border-t-accentGreen/50 mb-6">
-                    <h2 class="text-2xl font-bold text-textBright tracking-tight mb-2">Dashboard</h2>
-                    <p class="text-sm text-textMuted font-light">Select a module to continue.</p>
+                
+                <!-- Dynamic Hero Greeting -->
+                <div class="glass-card rounded-3xl p-8 md:p-10 shadow-2xl text-center border-t-2 border-t-accentGreen mb-6 relative overflow-hidden bg-gradient-to-br from-[#0c4436]/60 to-[#031713]/60">
+                    <!-- Subtle Glow Effects -->
+                    <div class="absolute top-0 right-0 -mr-12 -mt-12 w-40 h-40 rounded-full bg-accentGreen/20 blur-3xl"></div>
+                    <div class="absolute bottom-0 left-0 -ml-12 -mb-12 w-40 h-40 rounded-full bg-[#34E0A1]/10 blur-3xl"></div>
+                    
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-textBright tracking-tight mb-3 relative z-10">Production <span class="text-accentGreen">Command Center</span></h2>
+                    <p class="text-sm md:text-base text-textSubhead font-medium relative z-10 max-w-lg mx-auto leading-relaxed">Manage your recipes, track active daily orders, and calculate your exact prep requirements.</p>
                 </div>
 
+                <!-- Dynamic Quick Stats -->
+                <div class="grid grid-cols-3 gap-3 md:gap-5 mb-6">
+                    <div class="glass-card rounded-2xl p-4 md:p-6 flex flex-col items-center justify-center text-center border-b-2 border-b-[#4ade80] hover:bg-white/5 transition-colors">
+                        <span id="stat-products" class="text-3xl md:text-4xl font-black text-textBright tracking-tighter">0</span>
+                        <span class="text-[9px] md:text-[11px] uppercase tracking-widest text-textMuted font-bold mt-2">Products</span>
+                    </div>
+                    <div class="glass-card rounded-2xl p-4 md:p-6 flex flex-col items-center justify-center text-center border-b-2 border-b-[#34E0A1] hover:bg-white/5 transition-colors">
+                        <span id="stat-bases" class="text-3xl md:text-4xl font-black text-textBright tracking-tighter">0</span>
+                        <span class="text-[9px] md:text-[11px] uppercase tracking-widest text-textMuted font-bold mt-2">Master Bases</span>
+                    </div>
+                    <div class="glass-card rounded-2xl p-4 md:p-6 flex flex-col items-center justify-center text-center border-b-2 border-b-[#60ad36] hover:bg-white/5 transition-colors">
+                        <span id="stat-categories" class="text-3xl md:text-4xl font-black text-textBright tracking-tighter">0</span>
+                        <span class="text-[9px] md:text-[11px] uppercase tracking-widest text-textMuted font-bold mt-2">Categories</span>
+                    </div>
+                </div>
+
+                <!-- Interactive Navigation Modules -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                    <button onclick="switchTab('tab-order-calc')" class="glass-card rounded-2xl p-6 text-left hover:border-accentGreen/50 hover:bg-black/20 transition-all group flex flex-col h-full border border-borderColor/50">
-                        <div class="w-10 h-10 rounded-full bg-accentGreen/10 flex items-center justify-center mb-4 text-accentGreen group-hover:scale-110 transition-transform">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    <button onclick="switchTab('tab-order-calc')" class="glass-card rounded-2xl p-6 text-left hover:-translate-y-1 hover:border-accentGreen hover:shadow-[0_10px_30px_rgba(74,222,128,0.15)] hover:bg-gradient-to-br hover:from-white/10 hover:to-transparent transition-all duration-300 group flex flex-col h-full border border-borderColor/60">
+                        <div class="w-12 h-12 rounded-full bg-black/40 border border-accentGreen/30 flex items-center justify-center mb-5 text-accentGreen group-hover:scale-110 group-hover:bg-accentGreen/20 transition-all duration-300 shadow-inner">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                         </div>
-                        <h3 class="text-lg font-bold text-textBright mb-2">Orders & Calc</h3>
-                        <p class="text-xs text-textMuted leading-relaxed">Add today's orders and view real-time ingredient calculations.</p>
+                        <h3 class="text-lg font-bold text-textBright mb-2 group-hover:text-accentGreen transition-colors">Orders & Calc</h3>
+                        <p class="text-xs text-textMuted leading-relaxed font-medium">Add today's orders and view real-time ingredient calculations on a single screen.</p>
                     </button>
 
-                    <button onclick="switchTab('tab-adding')" class="glass-card rounded-2xl p-6 text-left hover:border-accentGreen/50 hover:bg-black/20 transition-all group flex flex-col h-full border border-borderColor/50">
-                        <div class="w-10 h-10 rounded-full bg-accentGreen/10 flex items-center justify-center mb-4 text-accentGreen group-hover:scale-110 transition-transform">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                    <button onclick="switchTab('tab-adding')" class="glass-card rounded-2xl p-6 text-left hover:-translate-y-1 hover:border-[#34E0A1] hover:shadow-[0_10px_30px_rgba(52,224,161,0.15)] hover:bg-gradient-to-br hover:from-white/10 hover:to-transparent transition-all duration-300 group flex flex-col h-full border border-borderColor/60">
+                        <div class="w-12 h-12 rounded-full bg-black/40 border border-[#34E0A1]/30 flex items-center justify-center mb-5 text-[#34E0A1] group-hover:scale-110 group-hover:bg-[#34E0A1]/20 transition-all duration-300 shadow-inner">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                         </div>
-                        <h3 class="text-lg font-bold text-textBright mb-2">Product Manager</h3>
-                        <p class="text-xs text-textMuted leading-relaxed">Create new products, set up recipes, and manage dictionary types.</p>
+                        <h3 class="text-lg font-bold text-textBright mb-2 group-hover:text-[#34E0A1] transition-colors">Product Manager</h3>
+                        <p class="text-xs text-textMuted leading-relaxed font-medium">Create new products, setup component recipes, and manage dictionary types.</p>
                     </button>
 
-                    <button onclick="switchTab('tab-catalog')" class="glass-card rounded-2xl p-6 text-left hover:border-accentGreen/50 hover:bg-black/20 transition-all group flex flex-col h-full border border-borderColor/50">
-                        <div class="w-10 h-10 rounded-full bg-accentGreen/10 flex items-center justify-center mb-4 text-accentGreen group-hover:scale-110 transition-transform">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                    <button onclick="switchTab('tab-catalog')" class="glass-card rounded-2xl p-6 text-left hover:-translate-y-1 hover:border-[#60ad36] hover:shadow-[0_10px_30px_rgba(96,173,54,0.15)] hover:bg-gradient-to-br hover:from-white/10 hover:to-transparent transition-all duration-300 group flex flex-col h-full border border-borderColor/60">
+                        <div class="w-12 h-12 rounded-full bg-black/40 border border-[#60ad36]/30 flex items-center justify-center mb-5 text-[#60ad36] group-hover:scale-110 group-hover:bg-[#60ad36]/20 transition-all duration-300 shadow-inner">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
                         </div>
-                        <h3 class="text-lg font-bold text-textBright mb-2">Master Catalog</h3>
-                        <p class="text-xs text-textMuted leading-relaxed">View, edit, or delete existing products in your database.</p>
+                        <h3 class="text-lg font-bold text-textBright mb-2 group-hover:text-[#60ad36] transition-colors">Master Catalog</h3>
+                        <p class="text-xs text-textMuted leading-relaxed font-medium">View the full menu database, edit details, or delete discontinued items.</p>
                     </button>
                 </div>
             </div>
@@ -181,80 +204,80 @@
             <div id="tab-order-calc" class="space-y-6 tab-content hidden w-full">
                 
                 <!-- Order Selector -->
-                <div class="glass-card rounded-2xl p-6 shadow-xl relative overflow-visible border-t-2 border-t-accentGreen/50 z-30">
-                    <h2 class="text-lg font-bold text-textBright tracking-tight mb-4">Order Selector</h2>
+                <div class="glass-card rounded-2xl p-6 shadow-xl relative overflow-visible border-t-2 border-t-accentGreen z-30">
+                    <h2 class="text-xl font-bold text-textBright tracking-tight mb-4">Order Selector</h2>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <svg class="w-4 h-4 text-textMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </div>
-                        <input type="text" id="order-search-input" onclick="showAllProducts()" oninput="filterSearchCatalog()" placeholder="Type to filter products..." class="w-full bg-black/30 border border-borderColor/60 text-textBright rounded-xl pl-10 pr-4 py-3.5 text-sm focus:border-accentGreen outline-none shadow-inner relative z-40">
-                        <div id="search-dropdown" class="absolute z-50 w-full glass-card bg-[#021814]/95 border border-borderColor/80 shadow-2xl mt-2 max-h-60 overflow-y-auto hidden backdrop-blur-xl rounded-xl"></div>
+                        <input type="text" id="order-search-input" onclick="showAllProducts()" oninput="filterSearchCatalog()" placeholder="Type to filter products..." class="w-full bg-black/20 border border-borderColor/70 text-textBright rounded-xl pl-11 pr-4 py-3.5 text-sm focus:border-accentGreen outline-none shadow-inner relative z-40 transition-all">
+                        <div id="search-dropdown" class="absolute z-50 w-full glass-card bg-[#031713]/95 border border-borderColor/80 shadow-2xl mt-2 max-h-60 overflow-y-auto hidden backdrop-blur-xl rounded-xl"></div>
                     </div>
                 </div>
 
                 <!-- Active Orders -->
                 <div class="glass-card rounded-2xl shadow-xl overflow-hidden border border-borderColor/50 relative z-10">
-                    <div class="p-5 border-b border-borderColor/30 bg-black/10">
-                        <h2 class="text-lg font-bold text-textBright tracking-tight">Active Production Orders</h2>
+                    <div class="p-5 border-b border-borderColor/40 bg-black/10">
+                        <h2 class="text-xl font-bold text-textBright tracking-tight">Active Production Orders</h2>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
-                                <tr class="bg-black/20 text-textMuted text-[10px] uppercase tracking-wider font-semibold border-b border-borderColor/40">
-                                    <th class="py-3 px-5">Product</th>
-                                    <th class="py-3 px-4 hidden sm:table-cell">Category</th>
-                                    <th class="py-3 px-4 w-32 text-center">Quantity</th>
-                                    <th class="py-3 px-5 text-right">Action</th>
+                                <tr class="bg-black/20 text-textMuted text-[10px] uppercase tracking-wider font-bold border-b border-borderColor/50">
+                                    <th class="py-3.5 px-5">Product</th>
+                                    <th class="py-3.5 px-4 hidden sm:table-cell">Category</th>
+                                    <th class="py-3.5 px-4 w-32 text-center">Quantity</th>
+                                    <th class="py-3.5 px-5 text-right">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="active-orders-body" class="divide-y divide-borderColor/20">
-                                <tr><td colspan="4" class="p-6 text-center text-textMuted italic font-light text-sm bg-black/5">No orders added.</td></tr>
+                                <tr><td colspan="4" class="p-8 text-center text-textMuted italic font-light text-sm bg-black/5">No orders added.</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
                 <!-- Calculations -->
-                <div class="glass-card rounded-2xl p-6 shadow-xl space-y-8 border-t-2 border-t-borderColor/50 mt-6">
-                    <div class="mb-4 border-b border-borderColor/30 pb-3">
-                        <h2 class="text-lg font-bold text-textBright tracking-tight">Production Calculations</h2>
+                <div class="glass-card rounded-2xl p-6 md:p-8 shadow-xl space-y-8 border-t-2 border-t-borderColor/60 mt-8">
+                    <div class="mb-6 border-b border-borderColor/40 pb-4">
+                        <h2 class="text-2xl font-bold text-textBright tracking-tight">Production Calculations</h2>
                     </div>
                     
                     <div>
                         <div class="flex items-center gap-2 mb-4">
-                            <div class="w-1.5 h-1.5 rounded-full bg-accentGreen"></div>
+                            <div class="w-2 h-2 rounded-full bg-accentGreen"></div>
                             <h3 class="text-xs font-bold text-accentGreen uppercase tracking-widest">Linked Bases</h3>
                         </div>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="shared-doughs-summary">
-                            <div class="bg-black/20 p-4 rounded-xl border border-borderColor/30 text-xs text-textMuted italic col-span-full">No linked items ordered.</div>
+                            <div class="bg-black/20 p-5 rounded-xl border border-borderColor/40 text-sm text-textMuted italic col-span-full">No linked items ordered.</div>
                         </div>
                     </div>
                     <div>
                         <div class="flex items-center gap-2 mb-4">
-                            <div class="w-1.5 h-1.5 rounded-full bg-[#60ad36]"></div>
+                            <div class="w-2 h-2 rounded-full bg-[#60ad36]"></div>
                             <h3 class="text-xs font-bold text-[#60ad36] uppercase tracking-widest">Main Ingredients</h3>
                         </div>
                         <div class="space-y-4" id="main-ingredients-summary">
-                            <div class="bg-black/20 p-4 rounded-xl border border-borderColor/30 text-xs text-textMuted italic">No main ingredients.</div>
+                            <div class="bg-black/20 p-5 rounded-xl border border-borderColor/40 text-sm text-textMuted italic">No main ingredients.</div>
                         </div>
                     </div>
                     <div>
                         <div class="flex items-center gap-2 mb-4">
-                            <div class="w-1.5 h-1.5 rounded-full bg-[#34E0A1]"></div>
+                            <div class="w-2 h-2 rounded-full bg-[#34E0A1]"></div>
                             <h3 class="text-xs font-bold text-[#34E0A1] uppercase tracking-widest">Subcomponents</h3>
                         </div>
                         <div class="space-y-4" id="subcomponents-summary">
-                            <div class="bg-black/20 p-4 rounded-xl border border-borderColor/30 text-xs text-textMuted italic">No subcomponents.</div>
+                            <div class="bg-black/20 p-5 rounded-xl border border-borderColor/40 text-sm text-textMuted italic">No subcomponents.</div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- TAB 2: MANAGEMENT (Add/Edit Product) -->
-            <div id="tab-adding" class="space-y-6 tab-content hidden w-full">
-                <div class="glass-card rounded-2xl p-6 shadow-xl relative border-t-2 border-t-accentGreen/50">
-                    <div class="mb-6 border-b border-borderColor/30 pb-4">
-                        <h2 id="form-title" class="text-xl font-bold text-textBright tracking-tight">Add New Product</h2>
+            <div id="tab-adding" class="space-y-8 tab-content hidden w-full">
+                <div class="glass-card rounded-2xl p-6 md:p-8 shadow-xl relative border-t-2 border-t-accentGreen">
+                    <div class="mb-6 border-b border-borderColor/40 pb-4">
+                        <h2 id="form-title" class="text-2xl font-bold text-textBright tracking-tight">Add New Product</h2>
                     </div>
 
                     <form id="product-form" onsubmit="handleFormSubmit(event)" class="space-y-6">
@@ -263,107 +286,107 @@
                         <!-- Row 1: Name and Category -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label class="block text-[10px] font-semibold text-textSubhead uppercase tracking-widest mb-2">Product Name <span class="text-red-400">*</span></label>
-                                <input type="text" id="prod-name" required placeholder="Product Name" oninput="validateForm()" class="w-full bg-black/30 border border-borderColor/50 text-textBright rounded-xl px-3.5 py-3 text-sm outline-none focus:border-accentGreen transition-all">
+                                <label class="block text-[11px] font-bold text-textSubhead uppercase tracking-widest mb-2">Product Name <span class="text-red-400">*</span></label>
+                                <input type="text" id="prod-name" required placeholder="Product Name" oninput="validateForm()" class="w-full bg-black/20 border border-borderColor/70 text-textBright rounded-xl px-4 py-3.5 text-sm outline-none focus:border-accentGreen transition-all">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-semibold text-textSubhead uppercase tracking-widest mb-2">Category <span class="text-red-400">*</span></label>
-                                <select id="prod-category" onchange="validateForm()" class="w-full bg-black/30 border border-borderColor/50 text-textBright rounded-xl px-3.5 py-3 text-sm outline-none focus:border-accentGreen transition-all"></select>
+                                <label class="block text-[11px] font-bold text-textSubhead uppercase tracking-widest mb-2">Category <span class="text-red-400">*</span></label>
+                                <select id="prod-category" onchange="validateForm()" class="w-full bg-black/20 border border-borderColor/70 text-textBright rounded-xl px-4 py-3.5 text-sm outline-none focus:border-accentGreen transition-all"></select>
                             </div>
                         </div>
 
                         <!-- Row 2: Batch and Yield -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label class="block text-[10px] font-semibold text-textSubhead uppercase tracking-widest mb-2">Is Batch Production?</label>
-                                <div class="flex items-center gap-3 h-[42px]">
-                                    <label class="flex-1 flex items-center justify-center gap-2 bg-black/30 border border-borderColor/50 rounded-xl px-3 py-2 cursor-pointer has-[:checked]:border-accentGreen has-[:checked]:bg-accentGreen/10 transition-all">
-                                        <input type="radio" name="is_batch" id="batch-no" value="false" checked onchange="toggleBatchMode()" class="w-3.5 h-3.5 accent-accentGreen cursor-pointer">
-                                        <span class="text-textBright font-bold text-[11px] uppercase tracking-wider">No</span>
+                                <label class="block text-[11px] font-bold text-textSubhead uppercase tracking-widest mb-2">Is Batch Production?</label>
+                                <div class="flex items-center gap-3 h-[46px]">
+                                    <label class="flex-1 flex items-center justify-center gap-2 bg-black/20 border border-borderColor/70 rounded-xl px-3 py-2.5 cursor-pointer has-[:checked]:border-accentGreen has-[:checked]:bg-accentGreen/20 transition-all">
+                                        <input type="radio" name="is_batch" id="batch-no" value="false" checked onchange="toggleBatchMode()" class="w-4 h-4 accent-accentGreen cursor-pointer">
+                                        <span class="text-textBright font-bold text-xs uppercase tracking-wider">No</span>
                                     </label>
-                                    <label class="flex-1 flex items-center justify-center gap-2 bg-black/30 border border-borderColor/50 rounded-xl px-3 py-2 cursor-pointer has-[:checked]:border-accentGreen has-[:checked]:bg-accentGreen/10 transition-all">
-                                        <input type="radio" name="is_batch" id="batch-yes" value="true" onchange="toggleBatchMode()" class="w-3.5 h-3.5 accent-accentGreen cursor-pointer">
-                                        <span class="text-textBright font-bold text-[11px] uppercase tracking-wider">Yes</span>
+                                    <label class="flex-1 flex items-center justify-center gap-2 bg-black/20 border border-borderColor/70 rounded-xl px-3 py-2.5 cursor-pointer has-[:checked]:border-accentGreen has-[:checked]:bg-accentGreen/20 transition-all">
+                                        <input type="radio" name="is_batch" id="batch-yes" value="true" onchange="toggleBatchMode()" class="w-4 h-4 accent-accentGreen cursor-pointer">
+                                        <span class="text-textBright font-bold text-xs uppercase tracking-wider">Yes</span>
                                     </label>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-semibold text-textSubhead uppercase tracking-widest mb-2">Pieces per Batch</label>
-                                <input type="number" id="prod-yield" value="4" disabled class="w-full bg-black/20 border border-borderColor/50 text-textBright rounded-xl px-3.5 py-2 text-sm outline-none focus:border-accentGreen transition-all hide-spinners opacity-40 cursor-not-allowed h-[42px]">
+                                <label class="block text-[11px] font-bold text-textSubhead uppercase tracking-widest mb-2">Pieces per Batch</label>
+                                <input type="number" id="prod-yield" value="4" disabled class="w-full bg-black/10 border border-borderColor/40 text-textBright rounded-xl px-4 py-3 text-sm outline-none focus:border-accentGreen transition-all hide-spinners opacity-40 cursor-not-allowed h-[46px]">
                             </div>
                         </div>
 
                         <!-- Ingredient Linking section -->
-                        <div class="bg-black/20 p-5 rounded-xl border border-borderColor/40 space-y-3">
-                            <div class="flex items-center justify-between mb-1">
-                                <label class="block text-[10px] font-semibold text-accentGreen uppercase tracking-widest">Master Base Link</label>
-                                <button type="button" onclick="openModal('linking-info-modal')" class="text-textSubhead hover:text-bgDark hover:bg-accentGreen flex items-center justify-center w-5 h-5 rounded-full border border-borderColor text-[10px] font-bold transition-colors">?</button>
+                        <div class="bg-black/10 p-5 rounded-xl border border-borderColor/50 space-y-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="block text-[11px] font-bold text-accentGreen uppercase tracking-widest">Master Base Link</label>
+                                <button type="button" onclick="openModal('linking-info-modal')" class="text-textSubhead hover:text-bgDark hover:bg-accentGreen flex items-center justify-center w-6 h-6 rounded-full border border-borderColor text-xs font-bold transition-colors">?</button>
                             </div>
-                            <select id="prod-linked-dough" onchange="handleLinkingChange()" class="w-full bg-black/40 border border-borderColor/60 text-textBright rounded-xl px-3.5 py-3 text-sm outline-none focus:border-accentGreen transition-all"></select>
+                            <select id="prod-linked-dough" onchange="handleLinkingChange()" class="w-full bg-black/20 border border-borderColor/70 text-textBright rounded-xl px-4 py-3.5 text-sm outline-none focus:border-accentGreen transition-all"></select>
                         </div>
 
                         <!-- Ingredients & Subcomponents Box Grid -->
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 pt-2">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 pt-3">
                             
                             <!-- Custom Ingredients -->
-                            <div class="bg-[#03120f] p-5 rounded-xl border border-[#60ad36]/30 flex flex-col shadow-inner">
-                                <div class="flex items-center justify-between mb-4">
-                                    <h3 class="text-[10px] font-bold text-[#60ad36] uppercase tracking-widest flex items-center gap-1.5">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-[#60ad36]"></span> Custom Ingredients <span class="text-red-400">*</span>
+                            <div class="bg-black/20 p-5 rounded-xl border border-[#60ad36]/40 flex flex-col shadow-inner">
+                                <div class="flex items-center justify-between mb-5">
+                                    <h3 class="text-xs font-bold text-[#60ad36] uppercase tracking-widest flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-[#60ad36]"></span> Custom Ingredients <span class="text-red-400">*</span>
                                     </h3>
-                                    <button type="button" onclick="openModal('ing-info-modal')" class="text-textSubhead hover:text-bgDark hover:bg-[#60ad36] flex items-center justify-center w-5 h-5 rounded-full border border-borderColor/60 text-[10px] font-bold shrink-0 transition-colors">?</button>
+                                    <button type="button" onclick="openModal('ing-info-modal')" class="text-textSubhead hover:text-bgDark hover:bg-[#60ad36] flex items-center justify-center w-6 h-6 rounded-full border border-borderColor/60 text-xs font-bold shrink-0 transition-colors">?</button>
                                 </div>
-                                <div id="ingredients-container" class="space-y-2.5 flex-1"></div>
+                                <div id="ingredients-container" class="space-y-3 flex-1"></div>
                             </div>
 
                             <!-- Subcomponents -->
-                            <div class="bg-[#03120f] p-5 rounded-xl border border-[#34E0A1]/30 flex flex-col shadow-inner">
-                                <div class="flex items-center justify-between mb-4">
-                                    <h3 class="text-[10px] font-bold text-[#34E0A1] uppercase tracking-widest flex items-center gap-1.5">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-[#34E0A1]"></span> Subcomponents
+                            <div class="bg-black/20 p-5 rounded-xl border border-[#34E0A1]/40 flex flex-col shadow-inner">
+                                <div class="flex items-center justify-between mb-5">
+                                    <h3 class="text-xs font-bold text-[#34E0A1] uppercase tracking-widest flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-[#34E0A1]"></span> Subcomponents
                                     </h3>
-                                    <button type="button" onclick="openModal('sub-info-modal')" class="text-textSubhead hover:text-bgDark hover:bg-[#34E0A1] flex items-center justify-center w-5 h-5 rounded-full border border-borderColor/60 text-[10px] font-bold shrink-0 transition-colors">?</button>
+                                    <button type="button" onclick="openModal('sub-info-modal')" class="text-textSubhead hover:text-bgDark hover:bg-[#34E0A1] flex items-center justify-center w-6 h-6 rounded-full border border-borderColor/60 text-xs font-bold shrink-0 transition-colors">?</button>
                                 </div>
-                                <div id="subcomponents-container" class="space-y-2.5 flex-1"></div>
+                                <div id="subcomponents-container" class="space-y-3 flex-1"></div>
                             </div>
                         </div>
 
                         <!-- Form Actions -->
-                        <div class="flex gap-4 pt-6 border-t border-borderColor/30">
-                            <button type="submit" id="save-btn" disabled class="flex-1 bg-accentGreen hover:bg-green-400 text-bgDark font-bold py-3.5 rounded-xl text-sm transition-all shadow-md opacity-50 cursor-not-allowed">Save Product</button>
-                            <button type="button" id="cancel-edit-btn" onclick="resetForm()" class="hidden bg-black/40 border border-borderColor hover:bg-red-500/10 hover:text-red-400 text-textBright font-bold px-6 py-3.5 rounded-xl text-sm transition-all">Cancel</button>
+                        <div class="flex gap-4 pt-6 border-t border-borderColor/40">
+                            <button type="submit" id="save-btn" disabled class="flex-1 bg-accentGreen hover:bg-green-400 text-bgDark font-bold py-4 rounded-xl text-sm transition-all shadow-[0_4px_14px_rgba(74,222,128,0.25)] opacity-50 cursor-not-allowed">Save Product</button>
+                            <button type="button" id="cancel-edit-btn" onclick="resetForm()" class="hidden bg-black/30 border border-borderColor hover:bg-red-500/10 hover:border-red-400 hover:text-red-400 text-textBright font-bold px-8 py-4 rounded-xl text-sm transition-all">Cancel</button>
                         </div>
                     </form>
                 </div>
 
                 <!-- DICTIONARY MANAGER -->
-                <div class="glass-card rounded-2xl p-6 shadow-xl border-t-2 border-t-accentGreen/50">
-                    <h2 class="text-lg font-bold text-textBright tracking-tight mb-5 border-b border-borderColor/30 pb-3">Database Manager</h2>
+                <div class="glass-card rounded-2xl p-6 md:p-8 shadow-xl mt-8 border-t-2 border-t-accentGreen">
+                    <h2 class="text-xl font-bold text-textBright tracking-tight mb-5 border-b border-borderColor/40 pb-4">Database Manager</h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         
                         <div>
-                            <label class="block text-[10px] font-semibold text-textSubhead uppercase tracking-widest mb-2">Categories</label>
+                            <label class="block text-[11px] font-bold text-textSubhead uppercase tracking-widest mb-2.5">Categories</label>
                             <div class="flex gap-2 mb-3">
-                                <input type="text" id="dict-new-cat" class="flex-1 bg-black/30 border border-borderColor/50 text-textBright px-3 py-2.5 rounded-xl text-sm outline-none focus:border-accentGreen transition-all">
-                                <button type="button" onclick="addDict('categories', 'dict-new-cat')" class="bg-accentGreen/20 text-accentGreen border border-accentGreen/50 px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-accentGreen hover:text-bgDark transition-all">+</button>
+                                <input type="text" id="dict-new-cat" class="flex-1 bg-black/20 border border-borderColor/70 text-textBright px-3.5 py-3 rounded-xl text-sm outline-none focus:border-accentGreen transition-all">
+                                <button type="button" onclick="addDict('categories', 'dict-new-cat')" class="bg-accentGreen/20 text-accentGreen border border-accentGreen/50 px-4 py-3 rounded-xl text-sm font-bold hover:bg-accentGreen hover:text-bgDark transition-all">+</button>
                             </div>
                             <div id="dict-categories" class="flex flex-wrap gap-2"></div>
                         </div>
 
                         <div>
-                            <label class="block text-[10px] font-semibold text-textSubhead uppercase tracking-widest mb-2">Master Bases</label>
+                            <label class="block text-[11px] font-bold text-textSubhead uppercase tracking-widest mb-2.5">Master Bases</label>
                             <div class="flex gap-2 mb-3">
-                                <input type="text" id="dict-new-link" class="flex-1 bg-black/30 border border-borderColor/50 text-textBright px-3 py-2.5 rounded-xl text-sm outline-none focus:border-accentGreen transition-all">
-                                <button type="button" onclick="addDict('linkingGroups', 'dict-new-link')" class="bg-accentGreen/20 text-accentGreen border border-accentGreen/50 px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-accentGreen hover:text-bgDark transition-all">+</button>
+                                <input type="text" id="dict-new-link" class="flex-1 bg-black/20 border border-borderColor/70 text-textBright px-3.5 py-3 rounded-xl text-sm outline-none focus:border-accentGreen transition-all">
+                                <button type="button" onclick="addDict('linkingGroups', 'dict-new-link')" class="bg-accentGreen/20 text-accentGreen border border-accentGreen/50 px-4 py-3 rounded-xl text-sm font-bold hover:bg-accentGreen hover:text-bgDark transition-all">+</button>
                             </div>
                             <div id="dict-linking" class="flex flex-wrap gap-2"></div>
                         </div>
 
                         <div>
-                            <label class="block text-[10px] font-semibold text-textSubhead uppercase tracking-widest mb-2">Sub Types</label>
+                            <label class="block text-[11px] font-bold text-textSubhead uppercase tracking-widest mb-2.5">Sub Types</label>
                             <div class="flex gap-2 mb-3">
-                                <input type="text" id="dict-new-sub" class="flex-1 bg-black/30 border border-borderColor/50 text-textBright px-3 py-2.5 rounded-xl text-sm outline-none focus:border-accentGreen transition-all">
-                                <button type="button" onclick="addDict('subcatTypes', 'dict-new-sub')" class="bg-accentGreen/20 text-accentGreen border border-accentGreen/50 px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-accentGreen hover:text-bgDark transition-all">+</button>
+                                <input type="text" id="dict-new-sub" class="flex-1 bg-black/20 border border-borderColor/70 text-textBright px-3.5 py-3 rounded-xl text-sm outline-none focus:border-accentGreen transition-all">
+                                <button type="button" onclick="addDict('subcatTypes', 'dict-new-sub')" class="bg-accentGreen/20 text-accentGreen border border-accentGreen/50 px-4 py-3 rounded-xl text-sm font-bold hover:bg-accentGreen hover:text-bgDark transition-all">+</button>
                             </div>
                             <div id="dict-subtypes" class="flex flex-wrap gap-2"></div>
                         </div>
@@ -375,17 +398,17 @@
 
             <!-- TAB 3: CATALOG MASTERLIST -->
             <div id="tab-catalog" class="space-y-6 tab-content hidden w-full">
-                <div class="glass-card rounded-2xl p-6 shadow-xl relative border-t-2 border-t-accentGreen/50">
+                <div class="glass-card rounded-2xl p-6 md:p-8 shadow-xl relative border-t-2 border-t-accentGreen">
                     <div class="mb-6">
-                        <h2 class="text-xl font-bold text-textBright tracking-tight mb-4">Product Catalog</h2>
+                        <h2 class="text-2xl font-bold text-textBright tracking-tight mb-4">Product Catalog</h2>
                         <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                <svg class="w-4 h-4 text-textMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <svg class="w-5 h-5 text-textMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </div>
-                            <input type="text" id="catalog-search" oninput="filterCatalogTab()" placeholder="Filter by name..." class="w-full bg-black/30 border border-borderColor/60 text-textBright rounded-xl pl-10 pr-4 py-3 text-sm focus:border-accentGreen outline-none transition-all">
+                            <input type="text" id="catalog-search" oninput="filterCatalogTab()" placeholder="Filter by name or category..." class="w-full bg-black/20 border border-borderColor/70 text-textBright rounded-xl pl-11 pr-4 py-3.5 text-sm focus:border-accentGreen outline-none transition-all">
                         </div>
                     </div>
-                    <div class="overflow-y-auto max-h-[60vh] space-y-2.5 pr-1" id="product-catalog-list"></div>
+                    <div class="overflow-y-auto max-h-[65vh] space-y-3 pr-1" id="product-catalog-list"></div>
                 </div>
             </div>
 
@@ -393,22 +416,22 @@
     </main>
 
     <!-- BOTTOM NAV (MOBILE ONLY) -->
-    <nav id="mobile-bottom-nav" class="fixed bottom-0 left-0 right-0 bg-[#02100d]/95 border-t border-borderColor/40 backdrop-blur-xl flex justify-around items-center z-[1000] md:hidden pb-safe hidden shadow-[0_-10px_20px_rgba(0,0,0,0.3)]">
-        <button class="mobile-nav-tab active flex flex-col items-center justify-center w-full py-2.5 text-textMuted hover:text-accentGreen transition-colors" data-tab="tab-home" onclick="switchTab('tab-home')">
-            <svg class="w-5 h-5 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            <span class="text-[9px] font-semibold tracking-wide">Home</span>
+    <nav id="mobile-bottom-nav" class="fixed bottom-0 left-0 right-0 bg-[#031713]/95 border-t border-borderColor/50 backdrop-blur-xl flex justify-around items-center z-[1000] md:hidden pb-safe hidden shadow-[0_-10px_20px_rgba(0,0,0,0.4)]">
+        <button class="mobile-nav-tab active flex flex-col items-center justify-center w-full py-3 text-textMuted hover:text-accentGreen transition-colors" data-tab="tab-home" onclick="switchTab('tab-home')">
+            <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span class="text-[10px] font-bold tracking-wide">Home</span>
         </button>
-        <button class="mobile-nav-tab flex flex-col items-center justify-center w-full py-2.5 text-textMuted hover:text-accentGreen transition-colors" data-tab="tab-order-calc" onclick="switchTab('tab-order-calc')">
-            <svg class="w-5 h-5 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
-            <span class="text-[9px] font-semibold tracking-wide">Orders</span>
+        <button class="mobile-nav-tab flex flex-col items-center justify-center w-full py-3 text-textMuted hover:text-accentGreen transition-colors" data-tab="tab-order-calc" onclick="switchTab('tab-order-calc')">
+            <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+            <span class="text-[10px] font-bold tracking-wide">Orders</span>
         </button>
-        <button class="mobile-nav-tab flex flex-col items-center justify-center w-full py-2.5 text-textMuted hover:text-accentGreen transition-colors" data-tab="tab-adding" onclick="switchTab('tab-adding')">
-            <svg class="w-5 h-5 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-            <span class="text-[9px] font-semibold tracking-wide">Manage</span>
+        <button class="mobile-nav-tab flex flex-col items-center justify-center w-full py-3 text-textMuted hover:text-accentGreen transition-colors" data-tab="tab-adding" onclick="switchTab('tab-adding')">
+            <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <span class="text-[10px] font-bold tracking-wide">Manage</span>
         </button>
-        <button class="mobile-nav-tab flex flex-col items-center justify-center w-full py-2.5 text-textMuted hover:text-accentGreen transition-colors" data-tab="tab-catalog" onclick="switchTab('tab-catalog')">
-            <svg class="w-5 h-5 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-            <span class="text-[9px] font-semibold tracking-wide">Catalog</span>
+        <button class="mobile-nav-tab flex flex-col items-center justify-center w-full py-3 text-textMuted hover:text-accentGreen transition-colors" data-tab="tab-catalog" onclick="switchTab('tab-catalog')">
+            <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            <span class="text-[10px] font-bold tracking-wide">Catalog</span>
         </button>
     </nav>
 
@@ -440,8 +463,8 @@
             let bgClass = type === 'error' ? 'bg-red-500/90 text-white' : (type === 'warning' ? 'bg-yellow-500/90 text-bgDark' : 'bg-[#1e4d40] text-textBright');
             let icon = type === 'error' ? '✕' : (type === 'warning' ? '!' : '✓');
 
-            toast.className = `${bgClass} px-4 py-3 rounded-xl shadow-lg transform transition-all duration-300 translate-x-[120%] flex items-center gap-3 backdrop-blur-md border border-white/10 text-xs font-semibold pointer-events-auto`;
-            toast.innerHTML = `<span class="bg-white/20 rounded-full w-4 h-4 flex items-center justify-center text-[9px] shrink-0">${icon}</span> <span>${message}</span>`;
+            toast.className = `${bgClass} px-5 py-3.5 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)] transform transition-all duration-300 translate-x-[120%] flex items-center gap-3 backdrop-blur-md border border-white/10 text-sm font-semibold pointer-events-auto`;
+            toast.innerHTML = `<span class="bg-white/20 rounded-full w-5 h-5 flex items-center justify-center text-xs shrink-0">${icon}</span> <span>${message}</span>`;
             
             container.appendChild(toast);
             setTimeout(() => toast.classList.remove('translate-x-[120%]'), 10);
@@ -452,8 +475,33 @@
         }
 
         function formatUnitStr(val) {
-            if (val < 1000) return `${val.toFixed(2)} <span class="text-[10px] text-textMuted font-light ml-0.5">g/ml</span>`;
-            else return `${(val / 1000).toFixed(2)} <span class="text-[10px] text-accentGreen font-semibold ml-0.5">kg/L</span>`;
+            if (val < 1000) return `${val.toFixed(2)} <span class="text-[11px] text-textMuted font-light ml-0.5">g/ml</span>`;
+            else return `${(val / 1000).toFixed(2)} <span class="text-[11px] text-accentGreen font-semibold ml-0.5">kg/L</span>`;
+        }
+
+        function animateValue(id, start, end, duration) {
+            if (start === end) return;
+            let range = end - start;
+            let current = start;
+            let increment = end > start ? 1 : -1;
+            let stepTime = Math.abs(Math.floor(duration / range));
+            let obj = document.getElementById(id);
+            if(!obj) return;
+            let timer = setInterval(function() {
+                current += increment;
+                obj.innerHTML = current;
+                if (current == end) clearInterval(timer);
+            }, stepTime);
+        }
+
+        function updateDashboardStats() {
+            const prodCount = products ? products.length : 0;
+            const baseCount = linkingGroups ? linkingGroups.length : 0;
+            const catCount = categories ? categories.length : 0;
+            
+            animateValue("stat-products", parseInt(document.getElementById("stat-products").innerText) || 0, prodCount, 600);
+            animateValue("stat-bases", parseInt(document.getElementById("stat-bases").innerText) || 0, baseCount, 600);
+            animateValue("stat-categories", parseInt(document.getElementById("stat-categories").innerText) || 0, catCount, 600);
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
@@ -580,6 +628,7 @@
             });
             updateDropdowns();
             renderDictionaries();
+            updateDashboardStats();
             if(currentUser) renderProductCatalog();
         }
 
@@ -620,7 +669,7 @@
 
         function renderDictionaries() {
             const wrapStr = (arr, type) => arr.map((item, idx) => `
-                <span class="bg-black/30 border border-borderColor/60 text-textSubhead text-[11px] font-medium px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm">
+                <span class="bg-black/30 border border-borderColor/50 text-textBright text-[11px] font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 shadow-sm">
                     ${item} 
                     <button type="button" onclick="editDict('${type}', ${idx})" class="text-textMuted hover:text-accentGreen transition-colors flex items-center justify-center w-4 h-4 ml-1" title="Edit">✎</button>
                     <button type="button" onclick="deleteDict('${type}', ${idx})" class="text-textMuted hover:text-red-400 font-bold transition-colors flex items-center justify-center w-4 h-4" title="Delete">×</button>
@@ -630,6 +679,7 @@
             document.getElementById('dict-categories').innerHTML = wrapStr(categories, 'categories');
             document.getElementById('dict-linking').innerHTML = wrapStr(linkingGroups, 'linkingGroups');
             document.getElementById('dict-subtypes').innerHTML = wrapStr(subcatTypes, 'subcatTypes');
+            updateDashboardStats();
         }
 
         function addDict(type, inputId) {
@@ -692,12 +742,12 @@
             
             if (isBatch) {
                 yieldInput.disabled = false;
-                yieldInput.classList.remove('opacity-40', 'cursor-not-allowed', 'bg-black/20');
-                yieldInput.classList.add('bg-black/40', 'border-accentGreen/50');
+                yieldInput.classList.remove('opacity-40', 'cursor-not-allowed', 'bg-black/10');
+                yieldInput.classList.add('bg-black/20', 'border-accentGreen/50');
             } else {
                 yieldInput.disabled = true;
-                yieldInput.classList.add('opacity-40', 'cursor-not-allowed', 'bg-black/20');
-                yieldInput.classList.remove('bg-black/40', 'border-accentGreen/50');
+                yieldInput.classList.add('opacity-40', 'cursor-not-allowed', 'bg-black/10');
+                yieldInput.classList.remove('bg-black/20', 'border-accentGreen/50');
             }
         }
 
@@ -746,10 +796,10 @@
             const container = document.getElementById('ingredients-container');
             container.innerHTML = currentIngredients.map((ing, idx) => `
                 <div class="flex gap-2 items-center w-full">
-                    <input type="text" value="${ing.name || ''}" oninput="updateIng(${idx}, 'name', this.value)" placeholder="Ingredient Name" class="w-[50%] min-w-0 bg-black/40 border border-borderColor/50 text-textBright px-3.5 py-2.5 rounded-xl text-xs outline-none focus:border-[#60ad36] transition-all">
-                    <input type="number" value="${ing.grams || ''}" oninput="updateIng(${idx}, 'grams', parseFloat(this.value))" placeholder="g/ml" class="flex-1 min-w-[50px] bg-black/40 border border-borderColor/50 text-textBright px-2 py-2.5 rounded-xl text-xs outline-none focus:border-[#60ad36] text-center hide-spinners transition-all">
-                    <button type="button" onclick="insertIngRow(${idx})" class="w-9 h-9 shrink-0 text-textSubhead hover:text-bgDark bg-black/40 hover:bg-[#60ad36] border border-borderColor/50 rounded-xl font-bold flex items-center justify-center text-lg transition-all">+</button>
-                    <button type="button" onclick="removeIngRow(${idx})" class="w-9 h-9 shrink-0 text-textSubhead hover:text-red-900 bg-black/40 hover:bg-red-400 border border-borderColor/50 rounded-xl font-bold flex items-center justify-center text-lg transition-all">×</button>
+                    <input type="text" value="${ing.name || ''}" oninput="updateIng(${idx}, 'name', this.value)" placeholder="Ingredient Name" class="w-[50%] min-w-0 bg-black/20 border border-borderColor/60 text-textBright px-3.5 py-2.5 rounded-xl text-xs sm:text-sm outline-none focus:border-[#60ad36] transition-all">
+                    <input type="number" value="${ing.grams || ''}" oninput="updateIng(${idx}, 'grams', parseFloat(this.value))" placeholder="g/ml" class="flex-1 min-w-[50px] bg-black/20 border border-borderColor/60 text-textBright px-2 py-2.5 rounded-xl text-xs sm:text-sm outline-none focus:border-[#60ad36] text-center hide-spinners transition-all">
+                    <button type="button" onclick="insertIngRow(${idx})" class="w-9 h-9 sm:w-10 sm:h-10 shrink-0 text-textSubhead hover:text-bgDark bg-black/30 hover:bg-[#60ad36] border border-borderColor/50 rounded-xl font-bold flex items-center justify-center text-lg transition-all">+</button>
+                    <button type="button" onclick="removeIngRow(${idx})" class="w-9 h-9 sm:w-10 sm:h-10 shrink-0 text-textSubhead hover:text-red-900 bg-black/30 hover:bg-red-400 border border-borderColor/50 rounded-xl font-bold flex items-center justify-center text-lg transition-all">×</button>
                 </div>
             `).join('');
         }
@@ -778,13 +828,13 @@
 
                 return `
                 <div class="flex gap-2 items-center w-full">
-                    <select onchange="updateSub(${idx}, 'type', this.value)" class="w-[85px] shrink-0 bg-black/40 border border-borderColor/50 text-textBright px-2 py-2.5 rounded-xl text-[10px] outline-none focus:border-[#34E0A1] text-center transition-all">
+                    <select onchange="updateSub(${idx}, 'type', this.value)" class="w-[85px] shrink-0 bg-black/20 border border-borderColor/60 text-textBright px-2 py-3 rounded-xl text-[10px] sm:text-xs outline-none focus:border-[#34E0A1] text-center transition-all">
                         ${rowOptions}
                     </select>
-                    <input type="text" value="${sub.name || ''}" oninput="updateSub(${idx}, 'name', this.value)" placeholder="Name" class="w-1/3 min-w-0 bg-black/40 border border-borderColor/50 text-textBright px-3 py-2.5 rounded-xl text-xs outline-none focus:border-[#34E0A1] transition-all">
-                    <input type="number" value="${sub.grams || ''}" oninput="updateSub(${idx}, 'grams', parseFloat(this.value))" placeholder="g/ml" class="flex-1 min-w-[50px] bg-black/40 border border-borderColor/50 text-textBright px-2 py-2.5 rounded-xl text-xs outline-none focus:border-[#34E0A1] text-center hide-spinners transition-all">
-                    <button type="button" onclick="insertSubRow(${idx})" class="w-9 h-9 shrink-0 text-textSubhead hover:text-bgDark bg-black/40 hover:bg-[#34E0A1] border border-borderColor/50 rounded-xl font-bold flex items-center justify-center text-lg transition-all">+</button>
-                    <button type="button" onclick="removeSubRow(${idx})" class="w-9 h-9 shrink-0 text-textSubhead hover:text-red-900 bg-black/40 hover:bg-red-400 border border-borderColor/50 rounded-xl font-bold flex items-center justify-center text-lg transition-all">×</button>
+                    <input type="text" value="${sub.name || ''}" oninput="updateSub(${idx}, 'name', this.value)" placeholder="Name" class="w-1/3 min-w-0 bg-black/20 border border-borderColor/60 text-textBright px-3 py-2.5 rounded-xl text-xs sm:text-sm outline-none focus:border-[#34E0A1] transition-all">
+                    <input type="number" value="${sub.grams || ''}" oninput="updateSub(${idx}, 'grams', parseFloat(this.value))" placeholder="g/ml" class="flex-1 min-w-[50px] bg-black/20 border border-borderColor/60 text-textBright px-2 py-2.5 rounded-xl text-xs sm:text-sm outline-none focus:border-[#34E0A1] text-center hide-spinners transition-all">
+                    <button type="button" onclick="insertSubRow(${idx})" class="w-9 h-9 sm:w-10 sm:h-10 shrink-0 text-textSubhead hover:text-bgDark bg-black/30 hover:bg-[#34E0A1] border border-borderColor/50 rounded-xl font-bold flex items-center justify-center text-lg transition-all">+</button>
+                    <button type="button" onclick="removeSubRow(${idx})" class="w-9 h-9 sm:w-10 sm:h-10 shrink-0 text-textSubhead hover:text-red-900 bg-black/30 hover:bg-red-400 border border-borderColor/50 rounded-xl font-bold flex items-center justify-center text-lg transition-all">×</button>
                 </div>
             `}).join('');
         }
@@ -804,8 +854,8 @@
                 dropdown.innerHTML = list.map(p => `
                     <div onclick="addOrder('${p.id}')" class="px-5 py-3.5 hover:bg-accentGreen/10 cursor-pointer flex justify-between items-center text-sm border-b border-borderColor/30 last:border-0 transition-colors">
                         <div>
-                            <p class="font-bold text-textBright tracking-wide text-xs">${p.name}</p>
-                            <span class="text-[9px] bg-black/40 border border-borderColor/50 text-textSubhead px-2.5 py-0.5 rounded font-medium mt-1.5 inline-block">${p.category || 'Uncategorized'}</span>
+                            <p class="font-bold text-textBright tracking-wide text-sm">${p.name}</p>
+                            <span class="text-[9px] bg-black/40 border border-borderColor/50 text-textSubhead px-2.5 py-1 rounded font-bold mt-1.5 inline-block">${p.category || 'Uncategorized'}</span>
                         </div>
                         <span class="text-bgDark bg-accentGreen px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm uppercase tracking-wider">+ Add</span>
                     </div>
@@ -847,19 +897,19 @@
                 if (!p) return '';
                 return `
                     <tr class="hover:bg-black/10 transition-colors border-b border-borderColor/20 last:border-0 text-sm">
-                        <td class="py-3 px-5 font-bold text-textBright text-xs">${p.name}</td>
+                        <td class="py-3 px-5 font-bold text-textBright text-sm">${p.name}</td>
                         <td class="py-3 px-4 hidden sm:table-cell">
-                            <span class="text-[10px] bg-black/30 border border-borderColor/50 text-textSubhead px-2.5 py-1 rounded-lg font-medium">${p.category || '-'}</span>
+                            <span class="text-[10px] bg-black/30 border border-borderColor/50 text-textSubhead px-3 py-1 rounded-lg font-medium">${p.category || '-'}</span>
                         </td>
                         <td class="py-3 px-4">
-                            <div class="flex items-center justify-center bg-black/40 border border-borderColor/60 rounded-xl overflow-hidden w-24 mx-auto">
-                                <button onclick="updateOrderQty('${p.id}', ${activeOrders[id] - 1})" class="px-2.5 py-1.5 text-textBright hover:text-accentGreen hover:bg-white/5 transition-colors font-bold w-1/3 leading-none text-base">-</button>
-                                <input type="number" min="0" value="${activeOrders[id]}" oninput="updateOrderQty('${p.id}', this.value)" class="w-1/3 bg-transparent text-textBright text-xs text-center outline-none hide-spinners font-semibold">
-                                <button onclick="updateOrderQty('${p.id}', ${activeOrders[id] + 1})" class="px-2.5 py-1.5 text-textBright hover:text-accentGreen hover:bg-white/5 transition-colors font-bold w-1/3 leading-none text-base">+</button>
+                            <div class="flex items-center justify-center bg-black/30 border border-borderColor/60 rounded-xl overflow-hidden w-28 mx-auto">
+                                <button onclick="updateOrderQty('${p.id}', ${activeOrders[id] - 1})" class="px-3 py-2 text-textBright hover:text-accentGreen hover:bg-white/5 transition-colors font-bold w-1/3 leading-none text-lg">-</button>
+                                <input type="number" min="0" value="${activeOrders[id]}" oninput="updateOrderQty('${p.id}', this.value)" class="w-1/3 bg-transparent text-textBright text-sm text-center outline-none hide-spinners font-bold">
+                                <button onclick="updateOrderQty('${p.id}', ${activeOrders[id] + 1})" class="px-3 py-2 text-textBright hover:text-accentGreen hover:bg-white/5 transition-colors font-bold w-1/3 leading-none text-lg">+</button>
                             </div>
                         </td>
                         <td class="py-3 px-5 text-right">
-                            <button onclick="removeOrder('${p.id}')" class="text-textMuted hover:text-red-400 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-colors uppercase tracking-wider">Remove</button>
+                            <button onclick="removeOrder('${p.id}')" class="text-textMuted hover:text-red-400 text-[11px] font-bold px-3 py-2 rounded-lg transition-colors uppercase tracking-wider">Remove</button>
                         </td>
                     </tr>
                 `;
@@ -901,58 +951,58 @@
             const linkedKeys = Object.keys(sharedDoughMap);
             if (linkedKeys.length > 0) {
                 sharedContainer.innerHTML = linkedKeys.map(group => `
-                    <div class="bg-black/30 p-4 rounded-xl border border-borderColor/40 shadow-sm relative overflow-hidden group">
-                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accentGreen/80 to-transparent"></div>
-                        <p class="text-[10px] text-textMuted uppercase font-bold tracking-widest truncate mb-1.5" title="${group}">${group}</p>
-                        <p class="text-xl font-bold text-textBright">${sharedDoughMap[group].toFixed(2)} <span class="text-[10px] text-accentGreen font-medium ml-1">Batches</span></p>
+                    <div class="bg-black/20 p-5 rounded-2xl border border-borderColor/50 shadow-inner relative overflow-hidden group hover:bg-black/30 transition-colors">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accentGreen to-transparent"></div>
+                        <p class="text-[11px] text-textMuted uppercase font-bold tracking-widest truncate mb-2" title="${group}">${group}</p>
+                        <p class="text-3xl font-black text-textBright">${sharedDoughMap[group].toFixed(2)} <span class="text-[11px] text-accentGreen font-bold ml-1">Batches</span></p>
                     </div>
                 `).join('');
             } else {
-                sharedContainer.innerHTML = `<div class="bg-black/20 p-4 rounded-xl border border-borderColor/30 text-xs text-textMuted italic col-span-full">No linked items ordered.</div>`;
+                sharedContainer.innerHTML = `<div class="bg-black/20 p-5 rounded-2xl border border-borderColor/30 text-sm text-textMuted italic col-span-full">No linked items ordered.</div>`;
             }
 
             const mainContainer = document.getElementById('main-ingredients-summary');
             const catKeys = Object.keys(mainIngredientsMap);
             if (catKeys.length > 0) {
                 mainContainer.innerHTML = catKeys.map(cat => `
-                    <div class="bg-black/20 p-5 rounded-2xl border border-borderColor/30">
-                        <h4 class="text-[11px] font-bold text-textBright uppercase mb-4 tracking-widest flex items-center gap-2">
-                            <span class="w-1 h-3.5 rounded bg-borderColor"></span> ${cat}
+                    <div class="bg-black/20 p-6 rounded-2xl border border-borderColor/40 shadow-inner">
+                        <h4 class="text-xs font-bold text-textBright uppercase mb-4 tracking-widest flex items-center gap-2">
+                            <span class="w-1.5 h-4 rounded bg-borderColor"></span> ${cat}
                         </h4>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                             ${Object.keys(mainIngredientsMap[cat]).map(ing => `
-                                <div class="bg-black/30 p-3 rounded-xl border border-borderColor/40">
-                                    <p class="text-[10px] text-textMuted uppercase tracking-wide font-medium truncate mb-1" title="${ing}">${ing}</p>
-                                    <p class="text-sm font-bold text-textBright">${formatUnitStr(mainIngredientsMap[cat][ing])}</p>
+                                <div class="bg-black/30 p-4 rounded-xl border border-borderColor/50">
+                                    <p class="text-[11px] text-textMuted uppercase tracking-wide font-bold truncate mb-1" title="${ing}">${ing}</p>
+                                    <p class="text-xl font-bold text-textBright">${formatUnitStr(mainIngredientsMap[cat][ing])}</p>
                                 </div>
                             `).join('')}
                         </div>
                     </div>
                 `).join('');
             } else {
-                mainContainer.innerHTML = `<div class="bg-black/20 p-4 rounded-xl border border-borderColor/30 text-xs text-textMuted italic">No main ingredients calculated.</div>`;
+                mainContainer.innerHTML = `<div class="bg-black/20 p-5 rounded-2xl border border-borderColor/30 text-sm text-textMuted italic">No main ingredients calculated.</div>`;
             }
 
             const subContainer = document.getElementById('subcomponents-summary');
             const subTypes = Object.keys(subcomponentsMap);
             if (subTypes.length > 0) {
                 subContainer.innerHTML = subTypes.map(type => `
-                    <div class="bg-black/20 p-5 rounded-2xl border border-borderColor/30">
-                        <h4 class="text-[11px] font-bold text-textBright uppercase mb-4 tracking-widest flex items-center gap-2">
-                            <span class="w-1 h-3.5 rounded bg-borderColor"></span> ${type}s
+                    <div class="bg-black/20 p-6 rounded-2xl border border-borderColor/40 shadow-inner">
+                        <h4 class="text-xs font-bold text-textBright uppercase mb-4 tracking-widest flex items-center gap-2">
+                            <span class="w-1.5 h-4 rounded bg-borderColor"></span> ${type}s
                         </h4>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                             ${Object.keys(subcomponentsMap[type]).map(name => `
-                                <div class="bg-black/30 p-3 rounded-xl border border-borderColor/40">
-                                    <p class="text-[10px] text-textMuted uppercase tracking-wide font-medium truncate mb-1" title="${name}">${name}</p>
-                                    <p class="text-sm font-bold text-textBright">${formatUnitStr(subcomponentsMap[type][name])}</p>
+                                <div class="bg-black/30 p-4 rounded-xl border border-borderColor/50">
+                                    <p class="text-[11px] text-textMuted uppercase tracking-wide font-bold truncate mb-1" title="${name}">${name}</p>
+                                    <p class="text-xl font-bold text-textBright">${formatUnitStr(subcomponentsMap[type][name])}</p>
                                 </div>
                             `).join('')}
                         </div>
                     </div>
                 `).join('');
             } else {
-                subContainer.innerHTML = `<div class="bg-black/20 p-4 rounded-xl border border-borderColor/30 text-xs text-textMuted italic">No subcomponents required.</div>`;
+                subContainer.innerHTML = `<div class="bg-black/20 p-5 rounded-2xl border border-borderColor/30 text-sm text-textMuted italic">No subcomponents required.</div>`;
             }
         }
 
@@ -988,6 +1038,7 @@
                         });
                     }
                     showToast(`Saved "${name}"!`);
+                    updateDashboardStats();
                     renderProductCatalog();
                 } else {
                     if (id) {
@@ -1020,26 +1071,26 @@
                 products;
 
             if (displayList.length === 0) {
-                list.innerHTML = `<div class="p-6 text-center text-textMuted italic font-light bg-black/10 rounded-xl text-xs">No matching products found.</div>`;
+                list.innerHTML = `<div class="p-8 text-center text-textMuted italic font-light bg-black/10 rounded-2xl text-sm">No matching products found.</div>`;
                 return;
             }
 
             list.innerHTML = displayList.map(p => `
-                <div class="flex justify-between items-center p-4 bg-black/20 rounded-xl border border-borderColor/40 hover:border-accentGreen/50 transition-colors gap-3">
+                <div class="flex justify-between items-center p-5 bg-black/20 rounded-2xl border border-borderColor/40 hover:border-accentGreen/50 hover:bg-black/30 transition-all gap-4 shadow-sm">
                     <div class="min-w-0 flex-1">
-                        <div class="flex items-center gap-1.5 w-full">
-                            <p class="font-bold text-textBright tracking-wide truncate text-[13px]">${p.name}</p>
-                            ${p.linked_dough && p.linked_dough !== 'NONE' ? `<span class="text-accentGreen text-xs shrink-0 sm:hidden" title="Linked to ${p.linked_dough}">🔗</span>` : ''}
+                        <div class="flex items-center gap-2 w-full">
+                            <p class="font-bold text-textBright tracking-wide truncate text-base">${p.name}</p>
+                            ${p.linked_dough && p.linked_dough !== 'NONE' ? `<span class="text-accentGreen text-sm shrink-0 sm:hidden" title="Linked to ${p.linked_dough}">🔗</span>` : ''}
                         </div>
-                        <p class="hidden sm:flex text-[9px] text-textMuted mt-1.5 font-medium tracking-wide truncate gap-2">
-                            <span class="bg-black/40 px-2.5 py-1 rounded border border-borderColor/30">${p.category || 'Uncategorized'}</span>
+                        <p class="hidden sm:flex text-[10px] text-textMuted mt-2 font-bold tracking-wide truncate gap-3">
+                            <span class="bg-black/40 px-3 py-1 rounded-lg border border-borderColor/40 text-textSubhead">${p.category || 'Uncategorized'}</span>
                             ${p.is_batch ? `<span class="flex items-center text-textSubhead">Yield: ${p.yield_pieces}</span>` : ''}
                             ${p.linked_dough ? `<span class="flex items-center text-accentGreen/80">🔗 ${p.linked_dough}</span>` : ''}
                         </p>
                     </div>
-                    <div class="flex gap-1.5 shrink-0">
-                        <button onclick="editProduct('${p.id}')" class="text-accentGreen bg-accentGreen/10 border border-transparent hover:border-accentGreen px-3 py-2 text-[10px] rounded-lg transition-all font-bold tracking-wider uppercase">Edit</button>
-                        <button onclick="deleteProduct('${p.id}', '${p.name}')" class="text-red-400 bg-red-400/10 border border-transparent hover:border-red-400 px-3 py-2 text-[10px] rounded-lg transition-all font-bold tracking-wider uppercase">Delete</button>
+                    <div class="flex gap-2 shrink-0">
+                        <button onclick="editProduct('${p.id}')" class="text-accentGreen bg-accentGreen/10 border border-transparent hover:border-accentGreen hover:bg-accentGreen/20 px-4 py-2.5 text-[11px] rounded-xl transition-all font-bold tracking-wider uppercase">Edit</button>
+                        <button onclick="deleteProduct('${p.id}', '${p.name}')" class="text-red-400 bg-red-400/10 border border-transparent hover:border-red-400 hover:bg-red-400/20 px-4 py-2.5 text-[11px] rounded-xl transition-all font-bold tracking-wider uppercase">Delete</button>
                     </div>
                 </div>
             `).join('');
@@ -1109,6 +1160,7 @@
                     if (isDemoMode) {
                         products = products.filter(p => String(p.id) !== String(id));
                         showToast(`Deleted "${name}"`);
+                        updateDashboardStats();
                         renderProductCatalog();
                     } else {
                         const { error } = await db.from('bakery_products').delete().eq('id', id);
