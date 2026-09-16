@@ -614,10 +614,13 @@
         async function fetchProductsFromSupabase() {
             try {
                 let { data, error } = await db.from('bakery_products').select('*').order('name', { ascending: true });
-                if (error || !data || data.length === 0) throw new Error("Empty DB");
-                products = data;
+                
+                if (error) throw error; // Only fail if there is an actual database error
+                
+                products = data || []; // Accept empty data as normal
                 isDemoMode = false;
             } catch (err) {
+                console.error("Database connection failed, using offline mode:", err);
                 products = JSON.parse(JSON.stringify(SAMPLE_PRODUCTS));
                 isDemoMode = true;
             }
