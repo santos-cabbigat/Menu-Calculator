@@ -16,12 +16,12 @@
                 extend: {
                     fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
                     colors: {
-                        bgDark: '#031713', // Brighter base
-                        cardBg: 'rgba(12, 45, 35, 0.55)', // Brighter glass
-                        borderColor: '#22634e', // Brighter border
+                        bgDark: '#031713',
+                        cardBg: 'rgba(12, 45, 35, 0.55)',
+                        borderColor: '#22634e',
                         accentGreen: '#4ade80',
                         textBright: '#ffffff',
-                        textMuted: '#a8b8d0', // Less muted text
+                        textMuted: '#a8b8d0',
                         textSubhead: '#cbd5e1'
                     },
                     backgroundImage: {
@@ -45,7 +45,7 @@
             backdrop-filter: blur(16px); 
             -webkit-backdrop-filter: blur(16px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(74, 222, 128, 0.15); /* Subtle green tint border */
+            border: 1px solid rgba(74, 222, 128, 0.15);
         }
         
         select {
@@ -148,7 +148,6 @@
                 
                 <!-- Dynamic Hero Greeting -->
                 <div class="glass-card rounded-3xl p-8 md:p-10 shadow-2xl text-center border-t-2 border-t-accentGreen mb-6 relative overflow-hidden bg-gradient-to-br from-[#0c4436]/60 to-[#031713]/60">
-                    <!-- Subtle Glow Effects -->
                     <div class="absolute top-0 right-0 -mr-12 -mt-12 w-40 h-40 rounded-full bg-accentGreen/20 blur-3xl"></div>
                     <div class="absolute bottom-0 left-0 -ml-12 -mb-12 w-40 h-40 rounded-full bg-[#34E0A1]/10 blur-3xl"></div>
                     
@@ -614,13 +613,11 @@
         async function fetchProductsFromSupabase() {
             try {
                 let { data, error } = await db.from('bakery_products').select('*').order('name', { ascending: true });
-                
-                if (error) throw error; // Only fail if there is an actual database error
-                
-                products = data || []; // Accept empty data as normal
+                if (error) throw error;
+                products = data || [];
                 isDemoMode = false;
             } catch (err) {
-                console.error("Database connection failed, using offline mode:", err);
+                console.error("Using offline mode", err);
                 products = JSON.parse(JSON.stringify(SAMPLE_PRODUCTS));
                 isDemoMode = true;
             }
@@ -800,7 +797,7 @@
             container.innerHTML = currentIngredients.map((ing, idx) => `
                 <div class="flex gap-2 items-center w-full">
                     <input type="text" value="${ing.name || ''}" oninput="updateIng(${idx}, 'name', this.value)" placeholder="Ingredient Name" class="w-[50%] min-w-0 bg-black/20 border border-borderColor/60 text-textBright px-3.5 py-2.5 rounded-xl text-xs sm:text-sm outline-none focus:border-[#60ad36] transition-all">
-                    <input type="number" value="${ing.grams || ''}" oninput="updateIng(${idx}, 'grams', parseFloat(this.value))" placeholder="g/ml" class="flex-1 min-w-[50px] bg-black/20 border border-borderColor/60 text-textBright px-2 py-2.5 rounded-xl text-xs sm:text-sm outline-none focus:border-[#60ad36] text-center hide-spinners transition-all">
+                    <input type="number" step="0.001" value="${ing.grams || ''}" oninput="updateIng(${idx}, 'grams', parseFloat(this.value))" placeholder="g/ml" class="flex-1 min-w-[50px] bg-black/20 border border-borderColor/60 text-textBright px-2 py-2.5 rounded-xl text-xs sm:text-sm outline-none focus:border-[#60ad36] text-center hide-spinners transition-all">
                     <button type="button" onclick="insertIngRow(${idx})" class="w-9 h-9 sm:w-10 sm:h-10 shrink-0 text-textSubhead hover:text-bgDark bg-black/30 hover:bg-[#60ad36] border border-borderColor/50 rounded-xl font-bold flex items-center justify-center text-lg transition-all">+</button>
                     <button type="button" onclick="removeIngRow(${idx})" class="w-9 h-9 sm:w-10 sm:h-10 shrink-0 text-textSubhead hover:text-red-900 bg-black/30 hover:bg-red-400 border border-borderColor/50 rounded-xl font-bold flex items-center justify-center text-lg transition-all">×</button>
                 </div>
@@ -835,7 +832,7 @@
                         ${rowOptions}
                     </select>
                     <input type="text" value="${sub.name || ''}" oninput="updateSub(${idx}, 'name', this.value)" placeholder="Name" class="w-1/3 min-w-0 bg-black/20 border border-borderColor/60 text-textBright px-3 py-2.5 rounded-xl text-xs sm:text-sm outline-none focus:border-[#34E0A1] transition-all">
-                    <input type="number" value="${sub.grams || ''}" oninput="updateSub(${idx}, 'grams', parseFloat(this.value))" placeholder="g/ml" class="flex-1 min-w-[50px] bg-black/20 border border-borderColor/60 text-textBright px-2 py-2.5 rounded-xl text-xs sm:text-sm outline-none focus:border-[#34E0A1] text-center hide-spinners transition-all">
+                    <input type="number" step="0.001" value="${sub.grams || ''}" oninput="updateSub(${idx}, 'grams', parseFloat(this.value))" placeholder="g/ml" class="flex-1 min-w-[50px] bg-black/20 border border-borderColor/60 text-textBright px-2 py-2.5 rounded-xl text-xs sm:text-sm outline-none focus:border-[#34E0A1] text-center hide-spinners transition-all">
                     <button type="button" onclick="insertSubRow(${idx})" class="w-9 h-9 sm:w-10 sm:h-10 shrink-0 text-textSubhead hover:text-bgDark bg-black/30 hover:bg-[#34E0A1] border border-borderColor/50 rounded-xl font-bold flex items-center justify-center text-lg transition-all">+</button>
                     <button type="button" onclick="removeSubRow(${idx})" class="w-9 h-9 sm:w-10 sm:h-10 shrink-0 text-textSubhead hover:text-red-900 bg-black/30 hover:bg-red-400 border border-borderColor/50 rounded-xl font-bold flex items-center justify-center text-lg transition-all">×</button>
                 </div>
@@ -857,8 +854,8 @@
                 dropdown.innerHTML = list.map(p => `
                     <div onclick="addOrder('${p.id}')" class="px-5 py-3.5 hover:bg-accentGreen/10 cursor-pointer flex justify-between items-center text-sm border-b border-borderColor/30 last:border-0 transition-colors">
                         <div>
-                            <p class="font-bold text-textBright tracking-wide text-sm">${p.name}</p>
-                            <span class="text-[9px] bg-black/40 border border-borderColor/50 text-textSubhead px-2.5 py-1 rounded font-bold mt-1.5 inline-block">${p.category || 'Uncategorized'}</span>
+                            <p class="font-bold text-textBright tracking-wide text-xs">${p.name}</p>
+                            <span class="text-[9px] bg-black/40 border border-borderColor/50 text-textSubhead px-2.5 py-0.5 rounded font-bold mt-1.5 inline-block">${p.category || 'Uncategorized'}</span>
                         </div>
                         <span class="text-bgDark bg-accentGreen px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm uppercase tracking-wider">+ Add</span>
                     </div>
@@ -902,12 +899,12 @@
                     <tr class="hover:bg-black/10 transition-colors border-b border-borderColor/20 last:border-0 text-sm">
                         <td class="py-3 px-5 font-bold text-textBright text-sm">${p.name}</td>
                         <td class="py-3 px-4 hidden sm:table-cell">
-                            <span class="text-[10px] bg-black/30 border border-borderColor/50 text-textSubhead px-3 py-1 rounded-lg font-medium">${p.category || '-'}</span>
+                            <span class="text-[10px] bg-black/30 border border-borderColor/50 text-textSubhead px-2.5 py-1 rounded-lg font-medium">${p.category || '-'}</span>
                         </td>
                         <td class="py-3 px-4">
-                            <div class="flex items-center justify-center bg-black/30 border border-borderColor/60 rounded-xl overflow-hidden w-28 mx-auto">
+                            <div class="flex items-center justify-center bg-black/40 border border-borderColor/60 rounded-xl overflow-hidden w-28 mx-auto">
                                 <button onclick="updateOrderQty('${p.id}', ${activeOrders[id] - 1})" class="px-3 py-2 text-textBright hover:text-accentGreen hover:bg-white/5 transition-colors font-bold w-1/3 leading-none text-lg">-</button>
-                                <input type="number" min="0" value="${activeOrders[id]}" oninput="updateOrderQty('${p.id}', this.value)" class="w-1/3 bg-transparent text-textBright text-sm text-center outline-none hide-spinners font-bold">
+                                <input type="number" step="0.001" min="0" value="${activeOrders[id]}" oninput="updateOrderQty('${p.id}', this.value)" class="w-1/3 bg-transparent text-textBright text-sm text-center outline-none hide-spinners font-bold">
                                 <button onclick="updateOrderQty('${p.id}', ${activeOrders[id] + 1})" class="px-3 py-2 text-textBright hover:text-accentGreen hover:bg-white/5 transition-colors font-bold w-1/3 leading-none text-lg">+</button>
                             </div>
                         </td>
@@ -928,19 +925,27 @@
                 const p = products.find(prod => String(prod.id) === String(id));
                 if (!p) return;
                 const qty = activeOrders[id];
-                let multiplier = p.is_batch ? qty / p.yield_pieces : qty;
+                
+                // Smart rounding up to 4 decimal places to catch 6.667 fractional math gracefully
+                let rawMultiplier = p.is_batch ? (qty / p.yield_pieces) : qty;
+                let multiplier = Math.round(rawMultiplier * 10000) / 10000;
 
+                // 1. Linked Dough Map
                 if (p.linked_dough && p.linked_dough !== "NONE") {
                     sharedDoughMap[p.linked_dough] = (sharedDoughMap[p.linked_dough] || 0) + multiplier;
                 }
 
+                // 2. Ingredients Grouping (Force pools by Linked Dough first!)
                 if (p.ingredients && p.ingredients.length > 0) {
-                    if (!mainIngredientsMap[p.category]) mainIngredientsMap[p.category] = {};
+                    const groupName = (p.linked_dough && p.linked_dough !== "NONE") ? `🔗 Base: ${p.linked_dough}` : `📂 ${p.category || 'Uncategorized'}`;
+                    
+                    if (!mainIngredientsMap[groupName]) mainIngredientsMap[groupName] = {};
                     p.ingredients.forEach(ing => {
-                        mainIngredientsMap[p.category][ing.name] = (mainIngredientsMap[p.category][ing.name] || 0) + (ing.grams * multiplier);
+                        mainIngredientsMap[groupName][ing.name] = (mainIngredientsMap[groupName][ing.name] || 0) + (ing.grams * multiplier);
                     });
                 }
 
+                // 3. Subcomponents Grouping
                 if (p.subcomponents && p.subcomponents.length > 0) {
                     p.subcomponents.forEach(sc => {
                         if (!subcomponentsMap[sc.type]) subcomponentsMap[sc.type] = {};
@@ -970,7 +975,7 @@
                 mainContainer.innerHTML = catKeys.map(cat => `
                     <div class="bg-black/20 p-6 rounded-2xl border border-borderColor/40 shadow-inner">
                         <h4 class="text-xs font-bold text-textBright uppercase mb-4 tracking-widest flex items-center gap-2">
-                            <span class="w-1.5 h-4 rounded bg-borderColor"></span> ${cat}
+                            <span class="w-1.5 h-4 rounded ${cat.includes('🔗') ? 'bg-accentGreen' : 'bg-borderColor'}"></span> ${cat}
                         </h4>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                             ${Object.keys(mainIngredientsMap[cat]).map(ing => `
@@ -992,7 +997,7 @@
                 subContainer.innerHTML = subTypes.map(type => `
                     <div class="bg-black/20 p-6 rounded-2xl border border-borderColor/40 shadow-inner">
                         <h4 class="text-xs font-bold text-textBright uppercase mb-4 tracking-widest flex items-center gap-2">
-                            <span class="w-1.5 h-4 rounded bg-borderColor"></span> ${type}s
+                            <span class="w-1.5 h-4 rounded bg-[#34E0A1]"></span> ${type}s
                         </h4>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                             ${Object.keys(subcomponentsMap[type]).map(name => `
@@ -1016,7 +1021,7 @@
             const category = document.getElementById('prod-category').value;
             
             const is_batch = document.getElementById('batch-yes').checked;
-            const yield_pieces = is_batch ? parseInt(document.getElementById('prod-yield').value) || 1 : 1;
+            const yield_pieces = is_batch ? parseFloat(document.getElementById('prod-yield').value) || 1 : 1;
             
             let linked_dough = document.getElementById('prod-linked-dough').value;
             if(linked_dough === "NONE") linked_dough = "";
